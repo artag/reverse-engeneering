@@ -1,12 +1,12 @@
 # Assembly Language Programming for Reverse Engineering
 
-## 01.1. Tools
+## 01.01. Tools
 
 - Virtual Box c Windows 10
 - xdbg (x32dbg и x64dbg)
 - die (Detect It Easy)
 
-## 01.2. Двоичная и шестнадцатеричная системы. Ссылки
+## 01.02. Двоичная и шестнадцатеричная системы. Ссылки
 
 - Decimal-hex-binary conversion table:
 [https://kb.iu.edu/d/afdl](https://kb.iu.edu/d/afdl)
@@ -14,7 +14,7 @@
 - Khan Academy's Free Lessons on Binary and hexadecimal number systems:
 [https://www.khanacademy.org/math/algebra-home/alg-intro-to-algebra/algebra-alternate-number-bases/v/number-systems-introduction](https://www.khanacademy.org/math/algebra-home/alg-intro-to-algebra/algebra-alternate-number-bases/v/number-systems-introduction)
 
-## 02.3-4. Intro to xdbg debugger
+## 02.03-04. Intro to xdbg debugger
 
 - Написать комментарий - `;` или ПКМ -> Comment
 - Поставить Breakpoint - `F2` или ПКМ -> Breakpoint -> Toggle
@@ -22,7 +22,7 @@
 - Запуск - `F9`
 - Поиск по строке - `Shift+D` или ПКМ -> Search for -> Current Module -> String References
 
-## 02.5. Как hollow out exe file
+## 02.05. Как hollow out exe file
 
 Т.е. как удалить тело функции в файле .exe не сломав его.
 
@@ -55,7 +55,7 @@ ret
 
 File -> Patch file... или `Ctrl+P`
 
-## 03.6. Intro to Registers
+## 03.06. Intro to Registers
 
 ![Registers](/01-03-registers/01_registers.jpg)
 
@@ -158,7 +158,7 @@ AL = 78
 
 ![Stack](/01-03-registers/02_stack.jpg)
 
-## 03.7. MOV и JMP Instructions. Вставка команд в xdbg
+## 03.07. MOV и JMP Instructions. Вставка команд в xdbg
 
 Вставка асемблера в xdbg:
 
@@ -200,4 +200,35 @@ mov ah, cl
 
 ```text
 jmp 0x401533
+```
+
+## 03.08 - Addition using full registers
+
+Синтакс:
+
+>ADD destination, source/value
+
+```text
+Destination <- Destination + Source
+```
+
+Пример:
+
+```text
+add eax, ecx            // eax <- eax + ecx
+add edi, 0x2A           // edi <- edi + 0x2A
+add cx, si              // cx, si - partial registers
+```
+
+### Практический пример. mov, add для полных регистров
+
+```text
+mov esi, 0x1        // инициализация
+mov eax, 0x2        // инициализация
+mov ebx, 0x3        // инициализация
+add eax, ebx
+add eax, eax
+mov esi, 0xFFFFFFFF
+add ebx, esi            // переполнение, появляется carry-flag
+add esi, eax            // переполнение, появляется carry-flag
 ```
