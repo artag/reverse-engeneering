@@ -131,8 +131,8 @@ AL = 78
 Используются при копировании строк.
 
 ```text
-|       esi (32 bit)       |
-|             | si (8 bit) |
+|        esi (32 bit)       |
+|             | si (16 bit) |
 ```
 
 #### Instruction pointer EIP
@@ -142,8 +142,8 @@ AL = 78
 **EIP** indicates the memory current address of current instruction
 
 ```text
-|       eip (32 bit)       |
-|             | ip (8 bit) |
+|        eip (32 bit)       |
+|             | ip (16 bit) |
 ```
 
 #### Stack Frame Pointers ESP EBP
@@ -176,7 +176,7 @@ Copies data from Source to Destination
 
 >MOV Destination, Source
 
-MOV - также называется mnemonic
+MOV - также называется key или mnemonic
 
 Пример:
 
@@ -202,7 +202,7 @@ mov ah, cl
 jmp 0x401533
 ```
 
-## 03.08 - Addition using full registers
+## 04.08-09. Addition using full and partial registers
 
 Синтакс:
 
@@ -223,12 +223,228 @@ add cx, si              // cx, si - partial registers
 ### Практический пример. mov, add для полных регистров
 
 ```text
-mov esi, 0x1        // инициализация
-mov eax, 0x2        // инициализация
-mov ebx, 0x3        // инициализация
+mov esi, 0x1            // инициализация
+mov eax, 0x2            // инициализация
+mov ebx, 0x3            // инициализация
 add eax, ebx
 add eax, eax
 mov esi, 0xFFFFFFFF
 add ebx, esi            // переполнение, появляется carry-flag
 add esi, eax            // переполнение, появляется carry-flag
+```
+
+### Практический пример. mov, add для неполных регистров
+
+Здесь тоже есть переполнение. Также, если есть переполнение, то старший разряд отбрасывается.
+
+```text
+mov edi, 0xAB29FFFF     // инициализация
+mov ecx, 0x00000703     // инициализация
+mov eax, 0x000000FF     // инициализация
+add al, ch
+add di, cx
+mov edi, 0xAB29FFFF
+add edi, ecx
+```
+
+## 04.10. Basic Arithmetic SUB Instruction
+
+Синтакс:
+
+>SUB destination, source/value
+
+```text
+Destination <- Destination - Source
+```
+
+Пример:
+
+```text
+sub eax, edx            // eax <- eax - edx
+sub edi, 0x2A           // edi <- edi - 0x2A
+sub cl, dl              // partial registers
+```
+
+### Практический пример. Операции sub
+
+```text
+mov eax, 0x1A       // инициализация
+mov ebx, 0x3        // инициализация
+mov ecx, 0x2        // инициализация
+sub eax, ebx
+add eax, ebx
+sub ecx, ebx        // пример отрицательного значения в виде результата = FFFFFFFF
+add ecx, eax
+sub cl, al          // пример отрицательного значения в виде результата = FF
+```
+
+## 05.11. INC and DEC Instructions
+
+Синтакс:
+
+>INC register
+>DEC register
+
+```text
+Register <- Register + 1
+Register <- Register - 1
+```
+
+Пример:
+
+```text
+inc eax             // eax <- eax + 1
+dec si              // si <- si - 1
+```
+
+### Практический пример. Операции inc и dec
+
+```text
+mov eax, FFFFFFFE   // инициализация
+inc eax
+inc al
+dec al
+inc ax
+dec ax
+inc eax
+inc eax
+```
+
+## 05.12. MUL Instructions
+
+MUL - Multiply
+
+>MUL register
+
+Примеры:
+
+```text
+mul register1b      // ax <- al * register
+mul register2b      // dx:ax <- ax * register    (сохр. часть в dx, часть в ax)
+mul register4b      // edx:eax <- eax * register (сохр. часть в edx, часть в eax)
+```
+
+```text
+mul ecx         // edx:eax <- eax * ecx     (сохр. часть в edx, часть в eax)
+mul si          // dx:ax <- ax * si
+mul al          // ax <- al * al
+mul 0x6B        // INVALID!, нельзя передавать константы
+```
+
+- Результат умножения по размеру больше исходного регистра в 2 раза
+- Результат умножения распределяется в разные регистры
+
+### Практический пример. Операции mul
+
+```text
+mov edx, 0xAB1E2FFF     // инициализация
+mov eax, 0x3            // инициализация
+mov ecx, 0x2            // инициализация
+mul ecx
+mul ecx
+mov ax, 0xEEEE
+mul ax
+mul cl
+```
+
+## 05.13. DIV Instructions and excercises
+
+DIV - Divide
+
+>DIV register
+
+```text
+byte register
+1-byte  <-  2-bytes  /  1-byte
+
+al <- ax / register         // quotient     частное
+ah <- ax % register         // remainder    остаток
+```
+
+```text
+word register (2-byte)
+2-byte  <-  2-byte:2-byte  /  2-byte
+
+ax <- dx:ax / register      // quotient     частное
+dx <- dx:ax % register      // remainder    остаток
+```
+
+```text
+dword register (4-byte)
+4-byte  <-  4-byte:4-byte  /  4-byte
+
+eax <- edx:eax / register   // quotient     частное
+edx <- edx:eax % register   // remainder    остаток
+```
+
+Примеры:
+
+```text
+div ch                  // 1 byte
+al <- ax / ch           // quotient     частное
+ah <- ax % ch           // remainder    остаток
+
+div di                  // 2 byte
+ax <- dx:ax / di        // quotient     частное
+dx <- dx:ax % di        // remainder    остаток
+
+div esi                 // 4 byte
+eax <- edx:eax / esi    // quotient     частное
+edx <- edx:eax % esi    // remainder    остаток
+
+div 0x8C        // INVALID!, нельзя передавать константы
+```
+
+### Исключения (ошибки)
+
+- **division by 0** (деление на 0)
+
+```text
+mov eax, 0x3
+mov edx, 0x0
+mov ecx, 0x0
+
+div ecx
+// eax <- edx:eax / ecx,    т.е. eax <- 0x0:0x3 / 0x0
+// edx <- edx:eax % ecx,    т.е. edx <- 0x0:0x3 % 0x0
+```
+
+- **quotient overflow** (переполнение частного - число слишком большое)
+
+```text
+mov eax, 0x00005678
+mov edx, 0xFFFFFFFF
+mov ecx, 0x2
+
+div ecx
+// eax <- edx:eax / ecx,    т.е. eax <- 0xFFFFFFFF:0x00005678 / 0x2
+```
+
+Исключения в xdbg показываются после выполнения инструкции внизу окна.
+
+## 05.14. DIV excercises
+
+1) Посмотреть исключения, из предыдущего соседнего раздела
+
+2) Упражение 1
+
+```text
+mov ecx, 0x2
+mov edx, 0x0
+mov eax, 0x8
+div ecx
+inc ecx
+div ecx
+```
+
+3) Упражение 2
+
+```text
+mov ebx, 0x3A
+mov edx, 0x20
+mov eax, 0x0
+div ebx
+div bx
+mov bl, 0xFE
+div bl
 ```
