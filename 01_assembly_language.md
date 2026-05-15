@@ -422,6 +422,9 @@ div ecx
 
 Исключения в xdbg показываются после выполнения инструкции внизу окна.
 
+- При *division by 0* код ошибки "EXCEPTION_INT_DIVIDE_BY_ZERO"
+- При *quotient overflow* код ошибки "EXCEPTION_INT_OVERFLOW"
+
 ## 05.14. DIV excercises
 
 1) Посмотреть исключения, из предыдущего соседнего раздела
@@ -448,3 +451,86 @@ div bx
 mov bl, 0xFE
 div bl
 ```
+
+## 06.15. How to read and write to memory
+
+Внизу окна xdbg дамп памяти.
+
+Отдельная вкладка "Memory Map".
+
+Окно "Memory Map", рассматриваются секции на примере процесса `template1.exe`:
+
+- `.text` - инструкции
+- `.data` - переменные, значения
+- `.rdata`, `.bss`, `.idata` - различные типы данных
+- `.idata` - хранятся либы
+
+Важна для нас секция `.data`:
+
+ПКМ на секции -> Follow in Dump или просто двойной ЛКМ по секции `.data`.
+
+Пустые сегменты (одни `0`) можно использовать для своих нужд (нужд программирования).
+
+### Вставка значения в память через регистр
+
+1. Помещаем значение в регистр
+
+```text
+mov eax,2
+```
+
+2. Копируем свободный адрес из окна dump
+
+`Alt+Ins` или Адрес -> ПКМ -> Copy -> Address
+
+3. Помещаем значение в сегмент памяти
+
+>MOV dword ptr ds:[0x00403050], eax
+
+- `dword` какой размер данных пишем (4 байта)
+- `ptr` указатель
+- `ds` - data segment
+- `[0x....]` - адрес памяти куда пишем (свободный адрес из шага 2)
+- `eax` - регистр - источник данных для записи
+
+### Отображение в памяти
+
+```text
+00403050 | 02 00 00 00 | 00 00 00 00 | ...
+```
+
+Данные в памяти сохраняются в обратном порядке младший байт записывается слева.
+Это известно как **Little endian** convention.
+
+### Чтение значения из памяти в регистр
+
+>MOV ebx, dword ptr ds:[0x00403050]
+
+- `ebx` регистр, куда сохраняются данные
+- `dword ptr ds:[0x00403050]` - источник данных - память
+
+Чтение из памяти, также как и запись туда, выполняется в обратном порядке.
+
+## 06.16. MOV to memory and direct memory patching
+
+### MOV to memory
+
+- Окно "Memory Map", двойной ЛКМ по секции `.data`
+- Копируем свободный адрес в буфер обмена.
+
+>MOV dword ptr ds:[0x00403050], 0x12
+
+### Direct memory patching
+
+- В окне "Dump" выбираем 4 значения -> `Ctrl+ E` или ПКМ -> Binary -> Edit
+- В разделе Hex: редактируем значения
+- Убеждаемся что стоит флажок `Keep Size`
+- `OK`
+
+Patch файл сохраняет изменения в memory, сделанные через прямое редактирование.
+
+## 06.17. Memory Exersize (Практическое самостоятельное упражнение)
+
+Write a program that can do the following. Put the hex values 13374 and 2C3 into
+memory. Then, add the two values and put the result in register ECX. Compare the value
+in ECX with your programmer's calculator to see if it is correct.
