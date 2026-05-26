@@ -534,3 +534,106 @@ Patch файл сохраняет изменения в memory, сделанны
 Write a program that can do the following. Put the hex values 13374 and 2C3 into
 memory. Then, add the two values and put the result in register ECX. Compare the value
 in ECX with your programmer's calculator to see if it is correct.
+
+## 07.18. The stack
+
+ОС выделяет память для каждого процесса. Такая выделенная память
+называется **стеком**. Каждый процесс запускается в своем стеке.
+
+Регистр `ESP` - указатель, всегда указывает на top стека.
+
+Плюс в отдельном окне есть указатели (смещения) вида:
+
+- `[esp+4]`
+- `[esp+8]`
+- `[esp+C]`
+- `[esp+10]`
+- `[esp+14]`
+
+## 07.18. Операция PUSH
+
+Если мы в стек делаем `PUSH`, то адрес в `ESP` смещается на `-4` байта
+и в этот адрес записывается значение из регистра.
+
+```text
+esp <- esp - 4
+dword[esp] <- value
+```
+
+![Stack push](/18-stack/01_stack_push.jpg)
+
+```text
+mov eax, 0x35A626
+mov ebx, 0x100484
+mov ecx, 0x000047
+push eax
+push ebx
+push ecx
+```
+
+## 07.19 Операция POP
+
+И наоборот в случае операции `POP`. Структура `LIFO` (last in first out).
+
+Если мы из стека делаем `POP`, то из текущего `ESP` адреса стека извлекается значение
+и записывается в регистр, адрес в `ESP` смещается на `+4` байта.
+
+```text
+register <- dword[esp]
+esp <- esp + 4
+```
+
+Демонстрация одного из назначений стека - временное хранилище данных регистров.
+
+В примере мы меняем значения стеков (операции `INC`), а потом восстанасливаем их значения
+из стека.
+
+Из `PUSH`:
+
+```text
+mov eax, 0x35A626
+mov ebx, 0x100484
+mov ecx, 0x000047
+push eax
+push ebx
+push ecx
+```
+
+Теперь `POP`:
+
+```text
+inc eax     // изменяем eax
+inc ebx     // изменяем ebx
+inc ecx     // изменяем ecx
+pop ecx
+pop ebx
+pop eax
+```
+
+## 07.20 Pushing constants and strings to the stack
+
+### Pushing constants
+
+Просто делаем
+
+```text
+push 0x53
+```
+
+### Pushing strings
+
+1. Сначала строку помещаем в память
+
+- Окно "Memory Map", двойной ЛКМ по секции `.data`
+- В окне "Dump" выбираем свободные ячейки в 4-х столбцах (16 значений `00`)
+- Открываем редактор `Ctrl+ E` или ПКМ -> Binary -> Edit
+- В ASCII поле вставляем текст "hello world"
+- Копируем адрес строки в буфер обмена (`Alt+Ins` или Адрес -> ПКМ -> Copy -> Address)
+
+Примечание: строка должна заканчиваться символом `00` (null terminator).
+
+2. Делаем push адреса ячейки, которая указывает на строку:
+
+```text
+push 0x00403050
+```
