@@ -628,6 +628,8 @@ push 0x53
 - В окне "Dump" выбираем свободные ячейки в 4-х столбцах (16 значений `00`)
 - Открываем редактор `Ctrl+ E` или ПКМ -> Binary -> Edit
 - В ASCII поле вставляем текст "hello world"
+- Убеждаемся что стоит флажок `Keep Size`
+- `OK`
 - Копируем адрес строки в буфер обмена (`Alt+Ins` или Адрес -> ПКМ -> Copy -> Address)
 
 Примечание: строка должна заканчиваться символом `00` (null terminator).
@@ -636,4 +638,183 @@ push 0x53
 
 ```text
 push 0x00403050
+```
+
+## 08.21. Funcions call (`CALL`)
+
+Ссылки на описание библиотек C:
+
+`printf()` function:
+
+- [https://www.tutorialspoint.com/c_standard_library/c_function_printf.htm](https://www.tutorialspoint.com/c_standard_library/c_function_printf.htm)
+
+format specifiers:
+
+- [https://www.tutorialspoint.com/format-specifiers-in-c](https://www.tutorialspoint.com/format-specifiers-in-c)
+
+Вызвать функцию:
+
+>CALL function
+
+### Вызов функции с 1 параметром
+
+На C:
+
+```c
+function(parameter1);
+```
+
+Assembly:
+
+```asm
+push parameter1         // parameter1 address
+call function           // function address
+```
+
+1. Вначале мы помещаем параметр (его адрес) в стек
+2. Потом вызываем (`CALL`) функцию (по ее адресу), которая принимает 1 параметр
+
+Более подробно:
+
+1.1. Сначала строку помещаем в память
+
+- Окно "Memory Map", двойной ЛКМ по секции `.data`
+- В окне "Dump" выбираем свободные ячейки в 4-х столбцах (16 значений `00`)
+- Открываем редактор `Ctrl+ E` или ПКМ -> Binary -> Edit
+- В ASCII поле вставляем текст "hello world"
+- Убеждаемся что стоит флажок `Keep Size`
+- `OK`
+- Копируем адрес строки в буфер обмена (`Alt+Ins` или Адрес -> ПКМ -> Copy -> Address)
+
+Примечание: строка должна заканчиваться символом `00` (null terminator).
+
+1.2. Делаем `push` адреса ячейки, которая указывает на строку:
+
+```asm
+push 0x00403050
+```
+
+2.1. Ищем адрес вызываемой функции. Двойной клик по вызову любой функции в коде.
+Переход на секцию с `jmp`, где заданы адреса функций.
+
+2.2. В примере нужен адрес функции `printf`. Находим строку `jmp dword ptr ds:[<printf>]`
+и копируем ее адрес в буфер обмена (`Alt+Ins` или Адрес -> ПКМ -> Copy -> Address)
+
+2.3. Для перехода в начало программы два раза кликнуть на регистре `EIP`.
+Регистр `EIP` содержит адрес entry point программы.
+
+2.4. Делаем `call` адреса ячейки, которая указывает на функцию:
+
+```asm
+call 0x00402614
+```
+
+## 08.22. Funcions call (`CALL`). Вызов функций с 2 параметрами (строка, строка)
+
+На C:
+
+```c
+function(parameter1);
+```
+
+Assembly:
+
+```asm
+push parameter2         // parameter2 address
+push parameter1         // parameter1 address
+call function           // function address
+```
+
+Здесь параметры добавляются в стек в обратном порядке: сначала второй, потом первый.
+
+### Пример вызова printf с двумя параметрами
+
+1. Чтобы вызвать: `printf("hello, %s", paul);`
+
+Надо написать:
+
+```asm
+push paul             // address
+push hello, %s        // address
+call printf           // address
+```
+
+## 08.23. Funcions call (`CALL`). Вызов функций с 2 параметрами (строка, число)
+
+Чтобы вызвать: `printf("number: %d", 1337);`
+
+Надо написать:
+
+```asm
+push 0x539            // В десятичной это 1337
+push number: %d       // address
+call printf           // address
+```
+
+Или (более сложно):
+
+Если положить число 539 в память по адресу 00403050 так
+
+```text
+39 05 00 00           // little-endian
+```
+
+То надо написать:
+
+```asm
+push dword ptr ds:[403050]          // Поместить в стек числовое значение (539) по адресу
+push number: %d                     // Поместить в стек адрес строки
+call printf                         // Вызвать адрес функции
+```
+
+- `dword` какой размер данных пишем (4 байта)
+- `ptr` указатель
+- `ds` - data segment
+- `[0x....]` - адрес памяти откуда читаем (свободный адрес из шага 2)
+
+## 08.24. Funcions call (`CALL`). Вызов функций с 3 параметрами
+
+На C:
+
+```c
+function(parameter1, parameter2, parameter3);
+```
+
+Assembly:
+
+```asm
+push parameter3         // parameter3 address
+push parameter2         // parameter2 address
+push parameter1         // parameter1 address
+call function           // function address
+```
+
+### Упражнение
+
+Надо вызвать:
+
+```c
+printf("hello, %s %s", string1, string2);
+```
+
+```asm
+push string2
+push string1
+push "hello, %s %s"
+call printf
+```
+
+output:
+
+```text
+hello, paul chin
+```
+
+Решение:
+
+```text
+push 0x403038           // 403038:"chin"
+push 0x403030           // 403030:"paul"
+push 0x403040           // 403040:"hello, %s %s"
+call <JMP.&printf>
 ```
