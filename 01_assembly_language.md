@@ -1150,14 +1150,14 @@ Use the code cave once you run out of memory.
 
 ### Решение
 
-- Адрес "Enter firstname: " `0x0403030`
-- Адрес "Enter lastname: " `0x0403050`
-- Адрес "Hello, %s %s\n" `0x0403070` (символ `\n` записывается в ASCII как `0A`)
-- Адрес "%s" `0x0403044`
-- Адрес функции "scanf" `0x0402604`
-- Адрес функции "printf" `0x0402614`
-- Адрес для имени (в .bss) `0x0405000`
-- Адрес для фамилии (в .bss) `0x0405050`
+- Адрес "Enter firstname: " `0x00403030`
+- Адрес "Enter lastname: " `0x00403050`
+- Адрес "Hello, %s %s\n" `0x00403070` (символ `\n` записывается в ASCII как `0A`)
+- Адрес "%s" `0x00403044`
+- Адрес функции "scanf" `0x00402604`
+- Адрес функции "printf" `0x00402614`
+- Адрес для имени (в .bss) `0x00405000`
+- Адрес для фамилии (в .bss) `0x00405050`
 
 ```asm
 push ebp            // Main
@@ -1165,21 +1165,120 @@ mov ebp,esp
 jmp 0x0402701       // Jump to code cave
 ...
 
-push 0x0403030      // "Enter firstname: "
-push 0x0403044      // "%s"
-call 0x0402614      // Call printf("%s", str)
-push 0x0405000      // Адрес записи для имени (в .bss)
-push 0x0403044      // "%s"
-call 0x0402604      // Call scanf("%s", str)
-push 0x0403050      // "Enter lastname: "
-push 0x0403044      // "%s"
-call 0x0402614      // Call printf("%s", str)
-push 0x0405050      // Адрес записи для фамилии (в .bss)
-push 0x0403044      // "%s"
-call 0x0402604      // Call scanf("%s", str)
-push 0x0405050      // Адрес чтения фамилии (в .bss)
-push 0x0405000      // Адрес чтения имени (в .bss)
-push 0x0403070      // "Hello, %s %s\n"
-call 0x0402614      // Call printf("Hello, %s %s\n", firstname, lastname)
+push 0x00403030      // "Enter firstname: "
+push 0x00403044      // "%s"
+call 0x00402614      // Call printf("%s", str)
+push 0x00405000      // Адрес записи для имени (в .bss)
+push 0x00403044      // "%s"
+call 0x00402604      // Call scanf("%s", str)
+push 0x00403050      // "Enter lastname: "
+push 0x00403044      // "%s"
+call 0x00402614      // Call printf("%s", str)
+push 0x00405050      // Адрес записи для фамилии (в .bss)
+push 0x00403044      // "%s"
+call 0x00402604      // Call scanf("%s", str)
+push 0x00405050      // Адрес чтения фамилии (в .bss)
+push 0x00405000      // Адрес чтения имени (в .bss)
+push 0x00403070      // "Hello, %s %s\n"
+call 0x00402614      // Call printf("Hello, %s %s\n", firstname, lastname)
 jmp 0x0401538       // Jump back to main
+```
+
+## 11.32-34. Упражнение. Калькулятор (только сложение)
+
+```text
+Write a program that can prompt the user for first number,
+second number, then add the numbers and print a message:
+
+firstnum + secondnum = sum
+
+Example output:
+
+Enter firstnum: 2
+Enter secondnum: 4
+2 + 4 = 6
+
+
+Use the code cave once you run out of memory.
+```
+
+### Решение
+
+- Адрес (`.data`) "Enter firstnum: " `0x00403030`
+- Адрес (`.data`) "Enter secondnum: " `0x00403050`
+- Адрес (`.data`) "%d + %d = %d\n" `0x00403070`
+- Адрес (`.data`) "%d" `0x00403080`
+- Адрес (`.data`) "%s" `0x00403084`
+- Адрес функции `scanf` `0x00402604`
+- Адрес функции `printf` `0x00402614`
+- Адрес (`.bss`) первого числа `0x00405000`
+- Адрес (`.bss`) второго числа `0x00405010`
+- Адрес начала code cave `0x00402701`
+- Адрес возврата в main `0x00401565`
+
+**Напоминание. Сложение**
+
+```text
+Destination <- Destination + Source
+add eax, ecx            // eax <- eax + ecx
+```
+
+**Напоминание. Чтение значения из памяти в регистр**
+
+```text
+MOV ebx, dword ptr ds:[0x00403050]
+```
+
+```asm
+Main
+===
+push 0x00403030                     // "Enter firstnum: "
+push 0x00403084                     // "%s"
+call 0x00402614                     // printf("%s", str)
+push 0x00405000                     // Адрес (`.bss`) первого числа
+push 0x00403080                     // "%d"
+call 0x00402604                     // scanf("%d", num)
+push 0x00403050                     // "Enter secondnum: "
+push 0x00403084                     // "%s"
+call 0x00402614                     // printf("%s", str)
+jmp 0x00402701                      // Переход в code cave
+...
+...
+Code Cave
+===
+push 0x00405010                     // Адрес (`.bss`) второго числа
+push 0x00403080                     // "%d"
+call 0x00402604                     // scanf("%d", num)
+mov ecx, dword ptr ds:[0x00405000]  // 1 число в регистр ecx
+mov eax, dword ptr ds:[0x00405000]  // 1 число в регистр eax
+mov ebx, dword ptr ds:[0x00405010]  // 2 число в регистр ebx
+add eax, ebx                        // Сложение чисел, запись результата в eax
+push eax                            // Результат сложения в стек
+push ebx                            // 2 число в стек
+push ecx                            // 1 число в стек
+push 0x00403070                     // "%d + %d = %d\n"
+call 0x00402614                     // printf("%d + %d = %d\n", num0, num1, num2)
+jmp 0x00401565                      // Возврат в main
+```
+
+Вариант решения в видео:
+
+1. Печать текста без "%s":
+
+```c
+printf("Enter firstnum: ")
+```
+
+2. Сложение и вывод релизованы так:
+
+```asm
+mov eax, 0
+add eax, dword ptr ds:[0x00405000]      // 1 слагаемое в eax
+add eax, dword ptr ds:[0x00405010]      // Сумма
+mov dword ptr ds:[0x00405020], eax      // Сохранение суммы
+push dword ptr ds:[0x00405020]          // Сумма в стек
+push dword ptr ds:[0x00405010]          // 2 слагаемое в стек
+push dword ptr ds:[0x00405000]          // 1 слагаемое в стек
+push 0x00403070                         // "%d + %d = %d\n"
+call 0x00402614                         // printf("%d + %d = %d\n", num0, num1, num2)
 ```
