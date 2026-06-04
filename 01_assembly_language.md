@@ -1092,6 +1092,7 @@ call printf
 - Копируем адрес строки в буфер обмена (`Alt+Ins` или Адрес -> ПКМ -> Copy -> Address)
 
 Примечание:
+
 - строка должна заканчиваться символом `00` (null terminator).
 - символ перевода строки "\n" в памяти записывается как ASCII символ `0x0A`.
 
@@ -1129,3 +1130,56 @@ jmp 0x<Адрес_main>          // Возврат в main
 jmp 0x<Адрес_code_cave>     // Переход в code cave
 push 0x<Адрес_строки_2>     // Возврат из code cave, помещение в стек второй строки
 call 0x<Адрес_printf>       // Вывод на экран второй строки
+
+## 10.31. Упражнение. Получение имени, фамилии и вывод на экран
+
+```text
+Write a program that can prompt the user for firstname,
+lastname, then print a message:
+
+Hello, firstname lastname
+
+Example output:
+
+Enter firstname: Paul
+Enter lastname: Chin
+Hello, Paul Chin
+
+Use the code cave once you run out of memory.
+```
+
+### Решение
+
+- Адрес "Enter firstname: " `0x0403030`
+- Адрес "Enter lastname: " `0x0403050`
+- Адрес "Hello, %s %s\n" `0x0403070` (символ `\n` записывается в ASCII как `0A`)
+- Адрес "%s" `0x0403044`
+- Адрес функции "scanf" `0x0402604`
+- Адрес функции "printf" `0x0402614`
+- Адрес для имени (в .bss) `0x0405000`
+- Адрес для фамилии (в .bss) `0x0405050`
+
+```asm
+push ebp            // Main
+mov ebp,esp
+jmp 0x0402701       // Jump to code cave
+...
+
+push 0x0403030      // "Enter firstname: "
+push 0x0403044      // "%s"
+call 0x0402614      // Call printf("%s", str)
+push 0x0405000      // Адрес записи для имени (в .bss)
+push 0x0403044      // "%s"
+call 0x0402604      // Call scanf("%s", str)
+push 0x0403050      // "Enter lastname: "
+push 0x0403044      // "%s"
+call 0x0402614      // Call printf("%s", str)
+push 0x0405050      // Адрес записи для фамилии (в .bss)
+push 0x0403044      // "%s"
+call 0x0402604      // Call scanf("%s", str)
+push 0x0405050      // Адрес чтения фамилии (в .bss)
+push 0x0405000      // Адрес чтения имени (в .bss)
+push 0x0403070      // "Hello, %s %s\n"
+call 0x0402614      // Call printf("Hello, %s %s\n", firstname, lastname)
+jmp 0x0401538       // Jump back to main
+```
