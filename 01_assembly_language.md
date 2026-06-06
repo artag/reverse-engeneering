@@ -460,10 +460,13 @@ div bl
 
 Окно "Memory Map", рассматриваются секции на примере процесса `template1.exe`:
 
-- `.text` - инструкции
-- `.data` - переменные, значения
-- `.rdata`, `.bss`, `.idata` - различные типы данных
-- `.idata` - хранятся либы
+- `.text` - инструкции (executable code)
+- `.data` - переменные, значения (initialized data)
+- `.rdata` - данные только для чтения (read-only initialized data)
+- `.bss` - временные данные, исчезают после перезапуска программы (uninitialized data)
+- `.idata` - различные типы данных, хранятся либы (import tables)
+- `.tls` - thread-local storage
+- `.rsrc` - resources
 
 В `.data` находятся данные (инициализированные), которые сохраняются после перезапуска программы.
 В `.bss` находятся временные (неинициализированные) данные, которые исчезают после перезапуска программы.
@@ -1281,4 +1284,72 @@ push dword ptr ds:[0x00405010]          // 2 слагаемое в стек
 push dword ptr ds:[0x00405000]          // 1 слагаемое в стек
 push 0x00403070                         // "%d + %d = %d\n"
 call 0x00402614                         // printf("%d + %d = %d\n", num0, num1, num2)
+```
+
+## 12.35. Функции, которые возвращают значения
+
+Ссылки на описание библиотек C:
+
+`strlen()` function:
+
+- [https://www.tutorialspoint.com/c_standard_library/c_function_strlen.htm](https://www.tutorialspoint.com/c_standard_library/c_function_strlen.htm)
+
+```c
+size_t strlen(const char *str)
+```
+Вызвать функцию с параметром:
+
+>push параметр
+>call 0x<адрес_strlen>
+
+Функция возвращает число в hex, которое записывается в регистр `EAX`
+
+### Упражнение
+
+Вызвать `strlen("hello world")`, функция возвращает `B` (11) и записывает это число в `EAX`
+
+```asm
+push 0x00403040         // "hello world" из .data
+call 0x<addr_strlen>    // вызов strlen("hello world") и сохранение возвращенного числа в `eax`
+```
+
+## 12.36. Упражнение. Определение длины введенного слова и вывод результата
+
+
+Write a program that can prompt the user to enter a word,
+then count the number of characters in that word and print a message:
+
+word has numcharacters
+
+Example output:
+
+```text
+Enter a string: apple
+apple has 5 characters
+```
+
+### Решение
+
+- адрес "Enter a string: " - `0x00403040`           // .data
+- адрес "%s has %d characters\n" - `0x00403060`     // .data
+- адрес "%s" - `0x00403054`                         // .data
+- адрес куда будет сохраняться ввод - `0x00405000`  // .bss
+- адрес `printf()` - `0x00402614`
+- адрес `scanf()` - `0x00402604`
+- aдрес `strlen()` - `0x004025F4`
+
+`\n` символ в ASCII как `0A`
+
+```asm
+push 0x00403040     // "Enter a string: "
+call 0x00402614     // printf("Enter a string: ")
+push 0x00405000     // адрес куда сохранять введенное слово
+push 0x00403054     // "%s"
+call 0x00402604     // scanf(%s, str)
+push 0x00405000     // читаем введенное слово
+call 0x00402604     // strlen(str)
+push eax            // число символов в str
+push 0x00405000     // введенное слово
+push 0x00403060     // "%s has %d characters\n"
+call 0x00402614     // printf("%s has %d characters\n", str, num)
 ```
