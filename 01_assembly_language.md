@@ -1353,3 +1353,148 @@ push 0x00405000     // введенное слово
 push 0x00403060     // "%s has %d characters\n"
 call 0x00402614     // printf("%s has %d characters\n", str, num)
 ```
+
+## 13.37-40 Flags Register
+
+![Flags register](/37-flags-register/01_flags-register.jpg)
+
+### `ZF` (The Zero Flag)
+
+- `ZF` is set to 1 when the last calculation results in zero
+- `ZF` is cleared to 0 when the last calculation results in non-zero
+
+1. Example:
+
+```text
+mov eax, 0x8
+mov ecx, 0x8
+sub eax, ecx
+```
+
+After the sub instruction, `ZF` is **set** to **1**
+
+2. Example:
+
+```text
+mov eax, 0x6
+mov ecx, 0x6
+add eax, ecx
+```
+
+After the add instruction, `ZF` will be **cleared** to **0**
+
+### `SF` (The Sign Flag)
+
+- `SF` equals the most significant bit of the last calculation
+
+Used in Two’s Complement Number Representation
+
+- `SF` = 0 means positive
+- `SF` = 1 means negative
+
+1. Example:
+
+```text
+mov edx, 0
+dec edx
+```
+
+`SF` = 1, because edx = 0xFFFFFFFF = **1**111.........1111
+
+2. Example
+
+```text
+mov edx, 0
+inc edx
+```
+
+`SF` = 0, because edx = 0x00000001 = **0**000.........0001
+
+### `CF` (The Carry Flag)
+
+`CF` = 1 if the addition of two numbers causes a carry out of the most significant bit. A wrap-around has occurred.
+
+1. Example
+
+```text
+mov eax, 0xFFFFFFFF
+add eax, 0x1            // eax = 0, CF = 1
+```
+
+Means the result you get from the addition is wrong
+
+![CF flag on add](/37-flags-register/02_cf-add.jpg)
+
+2. Example
+
+The `CF` will also be set to 1 if a subtraction requires a borrow from the most significant bit. A wrap-around also occurs.
+
+```text
+mov ecx, 0x0
+mov edx, 0x3
+sub ecx, edx        // ecx = 0xFFFFFFFD, CF = 1
+```
+
+![CF flag on sub](/37-flags-register/03_cf-sub.jpg)
+
+3. Example
+
+The `CF` will be cleared to 0 if no Carry occurs. No wrap-arounds.
+
+```text
+mov eax, 0x2
+mov ecx, 0x8
+add eax, ecx            // eax = 0xA, CF = 0
+```
+
+### `OF` (The Overflow Flag)
+
+If we assume the numbers are two complements representation (signed numbers), then the `OF` is set to 1 if:
+
+- the addition of two positive numbers -> negative result
+- the addition of two negative numbers -> positive result
+- positive – negative -> negative result
+- negative – positive -> positive result
+
+If the `OF` = 1, it means the result you get from the calculation is wrong
+
+1. Example 1
+
+```text
+mov eax, 0x7FFFFFFF
+mov edx, 0x1
+add eax, edx        // eax = 0x80000000, OF = 1
+```
+
+![Set OF to 1](/37-flags-register/04_set-of-to-1.jpg)
+
+2. Example 2
+
+```text
+mov eax, 0x7FFFFFFF
+mov edx, 0x1
+sub eax, edx        // eax = 0x7FFFFFFE, OF = 0
+```
+
+![Set OF to 0](/37-flags-register/05_set-of-to-0.jpg)
+
+## 13.41. When to look at `CF` or `OF`
+
+- Both `CF` (Carry Flag) and `OF` (Overflow flag) will change in
+every arithmetic operation.
+
+- Depending on how the numbers are being interpreted, you will then
+look either at the `CF` flag or the `OF` flag.
+
+- If you program is using unsigned numbers, the you will be
+concerned (смотрите на) with the `CF` flag.
+
+- But if you program works with signed numbers, then you will care
+about the `OF` flag.
+
+### In Summary
+
+- `ZF` flag set to 1 if the last result was zero
+- `SF` flag is set 1 if the last result was negative
+- `CF` flag is set 1 if result (numbers unsigned) is wrong
+- `OF` flag is set 1 if result (numbers signed) is wrong
