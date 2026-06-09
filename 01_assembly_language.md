@@ -1498,3 +1498,116 @@ about the `OF` flag.
 - `SF` flag is set 1 if the last result was negative
 - `CF` flag is set 1 if result (numbers unsigned) is wrong
 - `OF` flag is set 1 if result (numbers signed) is wrong
+
+## 14.42-45. Intro to JUMPS
+
+2 типа JUMPS:
+
+- Un-conditional jumps
+
+```asm
+jmp 0x04012428
+```
+
+- Conditional jumps
+
+```asm
+jz 0x04012428
+jnz 0x04012428
+```
+
+Conditional JUMPS based on values inside flags register
+
+### `JZ` (Jump Zero) / `JE` (Jump Equal)
+
+jumps only if the `ZF` is set to **1** (i.e. the result of the last calculation is **zero**)
+
+В x32dbg и x64dbg инструкция `JZ` может обозначаться как `JE` (Jump Equal)
+
+```asm
+           mov eax, 0x1
+           dec eax          // ZF = 1
+           jz  0x04012428   // ---
+           add eax, 0x5     //    |
+0x04012428 add eax, 0x2     // <--
+```
+
+Jump is taken, `EAX = 2`
+
+### `JNZ` (Jump Not Zero) / `JNE` (Jump Not Equal)
+
+jumps only if the `ZF` is cleared to **0** (i.e. the result of the last calculation is **non-zero**)
+
+В x32dbg и x64dbg инструкция `JNZ` может обозначаться как `JNE` (Jump Not Equal)
+
+```asm
+           mov eax, 0x1
+           inc eax          // ZF = 0
+           jnz 0x04012428   // ---
+           add eax, 0x5     //    |
+0x04012428 add eax, 0x2     // <--
+```
+
+Jump is taken, `EAX = 4`
+
+### Simple Loop (using `JZ`)
+
+```asm
+           mov eax, 0x0
+           mov ecx, 0x3
+0x04012428 add eax, ecx
+           dec ecx
+           jz  0x04012464
+           jmp 0x04012428
+0x04012464
+```
+
+Calculates: 3 + 2 + 1 = 6
+
+### Exercize. Еще один loop `JZ`
+
+Calculate: 1 + 2 + 3 ... + 100 = 5050 (0x13BA)
+
+```asm
+           mov eax, 0x0
+           mov ecx, 0x64        // здесь модификация: 0x64 = 100
+0x04012428 add eax, ecx
+           dec ecx
+           jz  0x04012464
+           jmp 0x04012428
+0x04012464
+```
+
+### Simple Loop (using `JNZ`)
+
+```asm
+           mov eax, 0x0
+           mov ecx, 0x3
+0x04012428 add eax, ecx
+           dec ecx
+           jnz 0x04012428
+```
+
+Calculates: 3 + 2 + 1 = 6
+
+## 14.46. Other jumps
+
+### `JS` and `JNS`
+
+- `JS` = Jump if `SF` (sign flag) is set to **1**
+- `JNS` = Jump if `SF` is cleared to **zero**
+
+### `JC` and `JNC`
+
+- `JC` = Jump if `CF` (carry flag) is set to **1**
+- `JNC` = Jump if `CF` is cleared to **zero**
+
+### `JO` and `JNO`
+
+- `JO` = Jump if `OF` (overflow flag) is set to **1**
+- `JNO` = Jump if `OF` is cleared to **zero**
+
+### Reading Flags Register Indirectly
+
+- Cannot read Flags Register directly
+- So, we can use the conditional jumps as an indirect way to read the Flags Register
