@@ -1611,3 +1611,85 @@ Calculates: 3 + 2 + 1 = 6
 
 - Cannot read Flags Register directly
 - So, we can use the conditional jumps as an indirect way to read the Flags Register
+
+## 15.47-48. `CMP` instructions. `JC` / `JB` jumps
+
+- `CMP` is used to compare 2 numbers
+- `A – B`, then changes flags accordingly but does not change `A` or `B`
+
+>CMP A, B
+
+Где `A` и `B` это любые регистры (`eax`, `ebx`, ...)
+
+- `JC` is also known as `JB` (Jump if Below)
+
+`JC = 1` или `JB = 1` если `A < B`
+
+### Пример
+
+```text
+cmp eax, abx
+
+Это:
+eax - ebx:
+if eax <  ebx, CF = 1
+if eax == ebx, CF = 0
+if eax >  ebx, CF = 0
+```
+
+```asm
+           mov ecx, 0x0
+           mov eax, 0x1
+           mov ebx, 0x2
+           cmp eax, ebx
+           jc 0x00401547      // eax < ebx --
+           inc ecx            //             |
+0x00401547 inc ecx            // <-----------
+```
+
+Результат при разных значениях `eax` и `ebx`:
+
+```text
+if eax <  ebx,   then ecx == 1
+if eax == ebx,   then ecx == 2
+if eax >  ebx,   then ecx == 2
+```
+
+## 15.49. Comparing unsigned and signed numbers
+
+Допустим есть 2 числа: `0xFFFFFFFF` и `0x00000001`
+
+Если они рассматриваются как беззнаковые (unsigned):
+
+```text
+0xFFFFFFFF  > 0x00000001
+```
+
+Но, если они рассматриваются как числа со знаком (signed):
+
+```text
+0xFFFFFFFF  < 0x00000001
+```
+
+Есть отдельные инструкции для сравнения беззнаковых и знаковых чисел.
+
+### `CMP` **unsigned** numbers. `JB`, `JBE`, `JA`, `JAE` jumps
+
+- `JB` (Jump Below)
+- `JBE` (Jump Below or Equal)
+- `JA` (Jump Above)
+- `JAE` (Jump Above or Equal)
+
+```text
+JB      EAX < EBX
+JBE     EAX >= EBX
+JA      EAX > EBX
+JAE     EAX >= EBX
+```
+
+### `CMP` **signed** numbers. `JL`, `JLE`, `JG`, `JGE` jumps
+
+- JL (Jump if Less)
+- JLE (Jump if Less or Equal)
+- JG (Jump if Greater)
+- JGE (Jump if Greater or Equal)
