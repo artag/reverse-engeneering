@@ -181,12 +181,15 @@ MOV - также называется key или mnemonic
 Пример:
 
 ```text
-mov eax, 0x3A           0x - HEX формат
+mov eax, 0x3A
 mov al, 0x8
 mov ebx, eax
 mov cx, bx
 mov ah, cl
 ```
+
+- `0x` - HEX формат
+- `0b` - binary формат
 
 ### JMP Instruction
 
@@ -1693,3 +1696,126 @@ JAE     EAX >= EBX
 - JLE (Jump if Less or Equal)
 - JG (Jump if Greater)
 - JGE (Jump if Greater or Equal)
+
+## 16.50-53. Intro to Structured Programming
+
+Описание проблем безконтрольного использования инструкций jump
+
+- Indiscriminate use of jump instructions may lead to spaghetti code
+- Spaghetti code is code which is hard to read and understand
+- Also difficult to debug
+
+Решение - использование структурного программирования
+
+- Use high-level programming constructs (HLPC) and implement them using assembly jumps
+- Example of HLPC:
+  - `if–else` blocks
+  - `while`, `for` and `do-while` loops
+
+### `IF-ELSE` statement
+
+Описание псевдокодом. `IF-ELSE`
+
+```text
+if eax < edx:                   cmp eax, edx
+                                jae else
+    eax <- eax + 1              inc eax
+                                jmp end_if
+else:                       else:
+    eax <- eax – 1              dec eax
+enf if                      end_if:
+```
+
+- `JAE` - Jump Above or Equal (EAX >= EBX) unsigned
+
+Описание псевдокодом. `IF`
+
+```text
+if eax < edx:                   cmp eax, edx
+                                jae end_if
+    eax <- eax + 1              inc eax
+end if                      end_if:
+```
+
+### `FOR` Loops
+
+- For iterating over a range of numbers
+- Eg: Sum all numbers from 0 to 9 (inclusive)
+
+```text
+                                mov eax, 0x0
+                                mov ecx, 0x0
+for ecx from 0 to 9 do:
+                            for_loop:
+    eax <- eax + ecx            add eax, ecx
+                                inc ecx
+                                cmp ecx, 0xA
+                                jne for_loop
+end for
+```
+
+- `JNE` Jump if Not Equal (ECX != 0xA) unsingned
+
+### `WHILE` Loops
+
+- Keep looping as long as some condition is true
+- Eg: Sum all numbers from 0 to 9 (inclusive)
+
+```text
+eax <- 0                        mov eax, 0x0
+ecx <- 0                        mov ecx, 0x0
+while ecx < 10 do:          while_loop:
+                                cmp ecx, 0xA
+                                jae end_while
+    eax <- eax + ecx            add eax, ecx
+    ecx <- ecx + 1              inc ecx
+                                jmp while_loop
+end while                   end_while:
+```
+
+- `JAE` - Jump Above or Equal (EAX >= EBX) unsigned
+
+### `BREAK` out of Loops
+
+- `BREAK`, allows you to exit the loop prematurely
+- Eg: Sum all numbers from 0 to 9 , but exit if the sum is >= 5
+
+```text
+eax <- 0                        mov eax, 0x0
+ecx <- 0                        mov ecx, 0x0
+for ecx 0 to 9 do:          for_loop:
+    eax <- eax + ecx            add eax, ecx
+    if eax >= 5:                cmp eax, 0x5
+    break                       jae end_for
+                                inc ecx
+                                cmp ecx, 0xA
+                                jb for_loop
+end for                     end_for:
+```
+
+- `JAE` - Jump Above or Equal (EAX >= EBX) unsigned
+- `JB` - Jump Below (EAX < EBX) unsigned
+
+### Principles of JUMPS
+
+- Every jump should part of:
+  - an `IF` statement
+  - a `FOR` loop
+  - a `WHILE` loop
+  - a `BREAK` from a loop
+- If a jump is none of the above, then you should not use a jump.
+
+### Direction of jumps
+
+- Forward jumps are part of `IF` or `BREAK` statements
+- Jump backwards are used in `FOR` or `WHILE` loops
+
+### Nesting `IF`, `FOR` and `WHILE` constructs
+
+- You may also nest the `IF`, `FOR` and `WHILE` inside each other.
+- But avoid too deep nesting – as it makes it difficult to read and understand the code
+
+### Avoid jumps that intersect each other
+
+- Above can be avoided if you design in pseudocode in HLPC first
+- Then convert it to assembly
