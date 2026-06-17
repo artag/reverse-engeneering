@@ -115,11 +115,11 @@ AL = 78
 |                                                   | ah (8 bit) | al (8 bit) |
 ```
 
-**RAX** is qword which is 8 bytes (64 bits)
-**EAX** is a dword which is 4 bytes (32 bits)
-**AX** is word which is 2 bytes (16 bits)
-**AH** is a byte (8 bits)
-**AL** is also a byte (8 bits)
+- **RAX** is qword which is 8 bytes (64 bits)
+- **EAX** is a dword which is 4 bytes (32 bits)
+- **AX** is word which is 2 bytes (16 bits)
+- **AH** is a byte (8 bits)
+- **AL** is also a byte (8 bits)
 
 ### ESI, EDI, EIP, ESP, EBP registers
 
@@ -1950,3 +1950,142 @@ Bit, Byte и Word отражают то, как именно дебаггер х
 `Директория, куда уставновлен xdbg/release/x32/db`
 
 Там хранятся временные файлы.
+
+## 17.55. `NEG` Instruction
+
+- `NEG` means to negate
+- It changes the sign of the number using two's complement method
+- i.e. flips all bits and then adds 1 to the number
+
+>NEG al
+
+### Пример
+
+```text
+|                    eax (32 bit)                   |
+|                         |       ax (16 bit)       |
+|                         | ah (8 bit) | al (8 bit) |
+```
+
+- **EAX** is dword which is 4 bytes (32 bits)
+- **AX** is a word which is 2 bytes (16 bits)
+- **AH** is a byte (8 bits)
+- **AL** is also a byte (8 bits)
+
+Изменить знак в регистре `AL`:
+
+```text
+mov al, 0x3
+neg al
+```
+
+Что происходит на самом деле:
+
+```text
+// Исходные данные в регистре al
+0000 0011
+
+// Выполняется инструкция NEG
+// 1. Инверсия всех битов в регистре
+1111 1100
+// 2. Добавление 1
+1111 1101             // 0xFD
+```
+
+### Практический пример
+
+```asm
+mov eax, 0x1
+neg eax
+neg eax         // 0x1
+```
+
+## 17.56-57. Signed and Unsigned extensions. `MOVZX`, `MOVSX`
+
+Регистры, например:
+
+```text
+|                    eax (32 bit)                   |
+|                         |       ax (16 bit)       |
+|                         | ah (8 bit) | al (8 bit) |
+```
+
+Описание проблемы:
+
+- в AL (8 bit) отрицательное число
+- как расширить отрицательное число до размера `AX` (16 bit)?
+
+### Пример 1. Extension положительного числа
+
+```text
+          0000 0101         // 5 (8 bit)
+0000 0000 0000 0101         // 5 (16 bit)
+```
+
+### Пример 2. Extension отрицательного числа
+
+```text
+          0000 0101         // 5 (8 bit)
+          1111 1011         // -5 (8 bit)
+1111 1111 1111 1011         // -5 (16 bit)
+```
+
+### Tips
+
+- If we want to extend a **positive** number, we add zeroes
+- If we want to extend a **negative** number, we add ones
+
+### `MOVZX`. Extending unsigned numbers
+
+>MOVZX larger_dst, smaller_src
+
+`MOVZX` - mov zero extension
+
+```text
+|                    eax (32 bit)                   |
+|                         |       ax (16 bit)       |
+|                         | ah (8 bit) | al (8 bit) |
+
+|                    ebx (32 bit)                   |
+|                         |       bx (16 bit)       |
+|                         | bh (8 bit) | bl (8 bit) |
+```
+
+```asm
+movzx eax, bl
+movzx eax, bx
+```
+
+```text
+mov al, 0b00000001
+movzx ebx, al
+ebx == 0000 0000 0000 0000 0000 0000 0000 0001
+
+mov al, 0b10000001
+movzx ebx, al
+ebx == 0000 0000 0000 0000 0000 0000 1000 0001
+```
+
+### `MOVSX`. Extending unsigned numbers
+
+>MOVSX larger_dst, smaller_src
+
+`MOVSX` - mov signed extension
+
+```asm
+movsx eax, bl
+movsx eax, bx
+```
+
+- если `bl` заканчивается на 0, расширение нулями
+- если `bl` заканчивается на 1, расширение единицами
+
+```text
+mov al, 0b00000001
+movsx ebx, al
+ebx == 0000 0000 0000 0000 0000 0000 0000 0001
+
+mov al, 0b10000001
+movzx ebx, al
+ebx == 1111 1111 1111 1111 1111 1111 1000 0001
+```
