@@ -1,0 +1,132 @@
+# Notes
+
+- [Assembly Language Programming for Reverse Engineering](/01_assembly_language/assembly_language.md)
+  - 01.01. Tools
+  - 01.02. Двоичная и шестнадцатеричная системы. Ссылки
+  - 02.03-04. Intro to xdbg debugger
+  - 02.05. Как hollow out exe file
+    - Удаление или заполнение NOP
+    - Запомнить изменения в файле (Patch)
+  - 03.06. Intro to Registers
+    - Basic general purpose registers
+      - 64-bit registers
+    - `ESI`, `EDI`, `EIP`, `ESP`, `EBP` registers
+      - String index registers `ESI` `EDI`
+      - Instruction pointer `EIP`
+      - Stack Frame Pointers `ESP` `EBP`
+  - 03.07. `MOV` и `JMP` Instructions. Вставка команд в xdbg
+    - `MOV` Instruction
+    - `JMP` Instruction
+  - 04.08-09. Addition using full and partial registers
+    - Практический пример. `MOV`, `ADD` для полных регистров
+    - Практический пример. `MOV`, `ADD` для неполных регистров
+  - 04.10. Basic Arithmetic `SUB` Instruction
+    - Практический пример. Операции `SUB`
+  - 05.11. `INC` and `DEC` Instructions
+    - Практический пример. Операции `INC` и `DEC`
+  - 05.12. `MUL` Instructions
+    - Практический пример. Операции `MUL`
+  - 05.13. `DIV` Instructions and excercises
+    - Исключения (ошибки)
+  - 05.14. `DIV` excercises
+  - 06.15. How to read and write to memory
+    - Вставка значения в память через регистр
+    - Отображение в памяти
+    - Чтение значения из памяти в регистр
+  - 06.16. `MOV` to memory and direct memory patching
+    - `MOV` to memory
+    - Direct memory patching
+  - 06.17. Memory Exersize (Практическое самостоятельное упражнение)
+  - 07.18. The stack. Операция `PUSH`
+    - Операция `PUSH`
+  - 07.19 Операция `POP`
+  - 07.20 Pushing constants and strings to the stack
+    - Pushing constants
+    - Pushing strings
+  - 08.21. Funcions call (`CALL`)
+    - Вызов функции с 1 параметром
+  - 08.22. Funcions call (`CALL`). Вызов функций с 2 параметрами (строка, строка)
+    - Пример вызова `printf` с двумя параметрами
+  - 08.23. Funcions call (`CALL`). Вызов функций с 2 параметрами (строка, число)
+  - 08.24. Funcions call (`CALL`). Вызов функций с 3 параметрами
+    - Упражнение
+  - 09.25. Getting Input using `scanf()` function
+    - Ввод числа и его сохранение в памяти при помощи `scanf`
+      - В окне "CPU" выбираем окно "Dump1". Окно "Memory Map", двойной ЛКМ по секции `.bss`
+      - В окне "CPU" выбираем окно "Dump2". Окно "Memory Map", двойной ЛКМ по секции `.data`
+      - Вызываем `scanf`
+      - Ввод числа в консоль программы
+      - В целевой ячейке памяти появляется введенное число в hex формате
+  - 09.26. Ввод и вывод числа через `scanf` и `printf`
+  - 09.27. Ввод и вывод строки через `scanf` и `printf`
+  - 10.28. Code cave
+    - Пояснение google ИИ
+    - Использование code cave. Зачем и как
+    - Ограничение code cave по размеру. Как определить доступный размер
+      - Как определить доступный размер code cave
+  - 10.29. Jump (`JMP`) to the code cave
+  - 10.30. Упражнение. Использование code cave и `printf`
+    - Решение
+  - 11.32-34. Упражнение. Калькулятор (только сложение)
+    - Решение
+  - 12.35. Функции, которые возвращают значения
+    - Упражнение
+  - 12.36. Упражнение. Определение длины введенного слова и вывод результата
+    - Решение
+  - 13.37-40 Flags Register
+    - `ZF` (The Zero Flag)
+    - `SF` (The Sign Flag)
+    - `CF` (The Carry Flag)
+    - `OF` (The Overflow Flag)
+  - 13.41. When to look at `CF` or `OF`
+    - In Summary
+  - 14.42-45. Intro to JUMPS
+    - `JZ` (Jump Zero) / `JE` (Jump Equal)
+    - `JNZ` (Jump Not Zero) / `JNE` (Jump Not Equal)
+    - Simple Loop (using `JZ`)
+    - Exercize. Еще один loop `JZ`
+    - Simple Loop (using `JNZ`)
+  - 14.46. Other jumps
+    - `JS` and `JNS`
+    - `JC` and `JNC`
+    - `JO` and `JNO`
+    - Reading Flags Register Indirectly
+  - 15.47-48. `CMP` instructions. `JC` / `JB` jumps
+    - Пример
+  - 15.49. Comparing unsigned and signed numbers
+    - `CMP` unsigned numbers. `JB`, `JBE`, `JA`, `JAE` jumps
+    - `CMP` signed numbers. `JL`, `JLE`, `JG`, `JGE` jumps
+  - 16.50-53. Intro to Structured Programming
+    - `IF-ELSE` statement
+    - `FOR` Loops
+    - `WHILE` Loops
+    - `BREAK` out of Loops
+    - Principles of JUMPS
+    - Direction of jumps
+    - Nesting `IF`, `FOR` and `WHILE` constructs
+    - Avoid jumps that intersect each other
+  - 16.54. Graph view Trace Animate and Principles of Jumps
+    - Пояснение про tracing от ИИ
+      - Bit Coverage (Битовое покрытие)
+      - Byte Coverage (Байтовое покрытие)
+      - Word Coverage (Вордовое покрытие / 2 байта)
+      - Применение в x64dbg / win32dbg
+    - Animate over (Анимированный обход)
+      - Как это работает и в чем разница с другими режимами
+      - Главные задачи Animate over
+      - Полезный лайфхак: Настройка скорости
+    - Почистить кэш xdbg
+  - 17.55. `NEG` Instruction
+    - Пример
+    - Практический пример
+  - 17.56-57. Signed and Unsigned extensions. `MOVZX`, `MOVSX`
+    - Пример 1. Extension положительного числа
+    - Пример 2. Extension отрицательного числа
+    - Tips
+    - `MOVZX`. Extending unsigned numbers
+    - `MOVSX`. Extending unsigned numbers
+  - 17.58. Converting Bytes, Words and Doublewords. `CBW`, `CWDE`, `CWD`, `CDQ`
+    - `CBW`
+    - `CWDE`
+    - `CWD`
+    - `CDQ`
