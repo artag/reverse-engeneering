@@ -2086,6 +2086,62 @@ movsx ebx, al
 ebx == 0000 0000 0000 0000 0000 0000 0000 0001
 
 mov al, 0b10000001
-movzx ebx, al
+movsx ebx, al
 ebx == 1111 1111 1111 1111 1111 1111 1000 0001
+```
+
+## 17.58. Converting Bytes, Words and Doublewords. `CBW`, `CWDE`, `CWD`, `CDQ`
+
+### `CBW`
+
+- `CBW` Converts Byte to Word (2 bytes)
+- No arguments
+- It extends `AL` to `AX` based on the sign
+
+Пример:
+
+```text
+mov al, 1000_0001
+cbw                     // ax == 1111_1111_1000_0001
+```
+
+### `CWDE`
+
+- `CWDE` Converts Byte, or, Word (2 bytes) to Doubleword (4 bytes)
+- No arguments
+- It extends `AL`, or, `AX`, to `EAX` based on the sign
+
+Пример:
+
+```text
+mov al, 1000_0001
+cwde                    // eax == 111111111111111111111111_1000_0001
+```
+
+### `CWD`
+
+- `CWD` Converts Byte, or, Word (2 bytes) to Doubleword (4 bytes)
+- No arguments
+- It extends `AX` to `DX:AX` based on the sign
+
+Пример:
+
+```text
+mov ax, 1000_0000_0000_0001
+cwd                     // dx == 1111_1111_1111_1111
+                        // ax == 1000_0000_0000_0001
+```
+
+### `CDQ`
+
+- `CDQ` Converts Doubleword (4 bytes) to Quadword (8 bytes)
+- No arguments
+- It extends `EAX` to `EDX:EAX` based on the sign
+
+Пример:
+
+```text
+mov eax, 1000_0000_0000_0000_0000_0000_0000_0001
+cdq                     // edx == 1111_1111_1111_1111_1111_1111_1111_1111
+                        // eax == 1000_0000_0000_0000_0000_0000_0000_0001
 ```
