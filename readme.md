@@ -1,6 +1,6 @@
 # Notes
 
-- [Assembly Language Programming for Reverse Engineering](/01_assembly_language/assembly_language.md)
+- [Assembly Language Programming for Reverse Engineering](01_assembly_language/assembly_language.md)
   - 01.01. Tools
   - 01.02. Двоичная и шестнадцатеричная системы. Ссылки
   - 02.03-04. Intro to xdbg debugger
@@ -130,3 +130,7 @@
     - `CWDE`
     - `CWD`
     - `CDQ`
+
+- [x64dg debugger for reverse engeneering beginners](02_x64dbg_debugger/x64dbg_debugger.md)
+  - 1-2. Installing tools
+  - 3. Где скачать файлы CrackMe
