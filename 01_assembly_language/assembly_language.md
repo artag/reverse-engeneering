@@ -57,7 +57,7 @@ File -> Patch file... или `Ctrl+P`
 
 ## 03.06. Intro to Registers
 
-![Registers](/01-03-registers/01_registers.jpg)
+![Registers](01-03-registers/01_registers.jpg)
 
 ### Basic general purpose registers
 
@@ -156,7 +156,7 @@ AL = 78
 Адрес ESP вверху, адрес EBP внизу.
 Адрес ESP < адреса EBP
 
-![Stack](/01-03-registers/02_stack.jpg)
+![Stack](01-03-registers/02_stack.jpg)
 
 ## 03.07. `MOV` и `JMP` Instructions. Вставка команд в xdbg
 
@@ -569,7 +569,7 @@ esp <- esp - 4
 dword[esp] <- value
 ```
 
-![Stack push](/18-stack/01_stack_push.jpg)
+![Stack push](18-stack/01_stack_push.jpg)
 
 ```text
 mov eax, 0x35A626
@@ -981,7 +981,7 @@ call <JMP.&printf>      // адрес printf
 
 Code caves находятся в самом низу:
 
-![Code caves](/28-code-caves/01_code-caves.jpg)
+![Code caves](28-code-caves/01_code-caves.jpg)
 
 Здесь инструкции `add byte ptr ds:[eax],al` являются `junk instructions`
 
@@ -1010,7 +1010,7 @@ Code Cave («пещера кода») - это последовательнос�
 - So, jump to code cave to inject more code
 - Then jump back to after jump point
 
-![Use code caves](/28-code-caves/02_use-code-caves.jpg)
+![Use code caves](28-code-caves/02_use-code-caves.jpg)
 
 ### Ограничение code cave по размеру. Как определить доступный размер
 
@@ -1359,7 +1359,7 @@ call 0x00402614     // printf("%s has %d characters\n", str, num)
 
 ## 13.37-40 Flags Register
 
-![Flags register](/37-flags-register/01_flags-register.jpg)
+![Flags register](37-flags-register/01_flags-register.jpg)
 
 ### `ZF` (The Zero Flag)
 
@@ -1426,7 +1426,7 @@ add eax, 0x1            // eax = 0, CF = 1
 
 Means the result you get from the addition is wrong
 
-![CF flag on add](/37-flags-register/02_cf-add.jpg)
+![CF flag on add](37-flags-register/02_cf-add.jpg)
 
 2. Example
 
@@ -1438,7 +1438,7 @@ mov edx, 0x3
 sub ecx, edx        // ecx = 0xFFFFFFFD, CF = 1
 ```
 
-![CF flag on sub](/37-flags-register/03_cf-sub.jpg)
+![CF flag on sub](37-flags-register/03_cf-sub.jpg)
 
 3. Example
 
@@ -1469,7 +1469,7 @@ mov edx, 0x1
 add eax, edx        // eax = 0x80000000, OF = 1
 ```
 
-![Set OF to 1](/37-flags-register/04_set-of-to-1.jpg)
+![Set OF to 1](37-flags-register/04_set-of-to-1.jpg)
 
 2. Example 2
 
@@ -1479,7 +1479,7 @@ mov edx, 0x1
 sub eax, edx        // eax = 0x7FFFFFFE, OF = 0
 ```
 
-![Set OF to 0](/37-flags-register/05_set-of-to-0.jpg)
+![Set OF to 0](37-flags-register/05_set-of-to-0.jpg)
 
 ## 13.41. When to look at `CF` or `OF`
 
