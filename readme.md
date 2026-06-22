@@ -134,3 +134,8 @@
 - [x64dg debugger for reverse engeneering beginners](02_x64dbg_debugger/x64dbg_debugger.md)
   - 1-2. Installing tools
   - 3. Где скачать файлы CrackMe
+  - 4. Workspace for reverse engineering. Типичный маршрут reverse engineering
+    - 4.1. Опционально. Добавить файл в исключение антивируса
+    - 4.2. Желательно. Сделать снимок на виртуальной машине
+    - 4.3. Утилита `DIE` (Detect It Easy)
+    - 4.4. Disassembler/debugger `x32dbg`, `x64dbg`
