@@ -139,3 +139,17 @@
     - 4.2. Желательно. Сделать снимок на виртуальной машине
     - 4.3. Утилита `DIE` (Detect It Easy)
     - 4.4. Disassembler/debugger `x32dbg`, `x64dbg`
+  - 5. Debugger Stepping Basics
+    - Setting Preferences. Предварительная настройка x32dbg/x64dbg
+    - x32dbg/x64dbg. Про TLS Callbacks
+      - Мусорные остановки в обычном софте
+      - Сбивает фокус с анализа
+      - Когда рекомендуется включить обратно опцию TLS Callback
+      - Правило хорошего тона в x32dbg/x64dbg
+    - x32dbg/x64dbg. Про Ignored Exceptions
+      - Зачем нужен список Ignored Exceptions
+      - Что будет если добавить `0x00000000 - 0xFFFFFFFF`
+    - Работа с файлом CTF в форме CLI
+    - Использование `DIE`
+    - Описание x32dbg/x64dbg
+    - Использование x32dbg/x64dbg
