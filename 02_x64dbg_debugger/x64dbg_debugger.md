@@ -242,16 +242,12 @@ EntryPoint = 0x000014e0
 - 1 колонка: RAM Memory Addresses
 - 2 колонка: OPCODE - machine code в hex представлении
 - 3 колонка: Assembly code (human readable code)
-- 4 колонка: комментарии (ручные и созданные xdbg)
+- 4 колонка: комментарии (ручные и созданные xdbg)/строки
 
 Программа x32dbg/x64dbg является disassembler, выполняет convert
 машинного кода (Opcode) в assembly code (human readable code).
 
 1 и 3 колонка основные, с чем производится работа.
-
-`JE`, `JLE`, `JNZ`, `JMP`, ... - все являются инструкциями jump.
-
-`JMP` - unconditional jump, все остальные - conditionals
 
 ### Использование x32dbg/x64dbg
 
@@ -268,3 +264,34 @@ crackme начинается с адреса `0x004014e0` (выяснили в `
 `Restart` перезапускает выполнение программы с Operating System Code.
 
 F8 или `Step Over` - выполняет по одной инструкции.
+
+### Conditional and unconditional jumps
+
+`JE`, `JLE`, `JNZ`, `JMP`, ... - все являются инструкциями jump.
+
+`JMP` - unconditional jump, все остальные - conditionals
+
+conditional jump - происходит только после выпополнения определенного условия
+
+unconditional jump - происходит всегда
+
+jump в обратную сторону позволяет организовать циклы.
+
+### Как узнать будет ли jump или нет
+
+1. В строке статуса (окно ниже основного) после выполнения условия перед инструкцией
+conditional jump будет строка:
+
+- `Jump is not taken` - jump не будет выполнен
+- `Jump is taken` - jump будет выполнен
+
+2. В столбце OPCODE jump изображен в виде линии:
+
+- Линия серая - jump не будет выполнен
+- Линия красная - jump будет выполнен
+
+### `EIP` - Extended Instruction Pointer
+
+`EIP` - Extended Instruction Pointer. Всегда указывает на последнюю инструкцию которая была выполнена.
+
+ЛКМ по этому указателю перемещает на эту инструкцию (строку).

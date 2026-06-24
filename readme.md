@@ -153,3 +153,6 @@
     - Использование `DIE`
     - Описание x32dbg/x64dbg
     - Использование x32dbg/x64dbg
+    - Conditional and unconditional jumps
+    - Как узнать будет ли jump или нет
+    - `EIP` - Extended Instruction Pointer
