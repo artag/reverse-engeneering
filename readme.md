@@ -156,3 +156,8 @@
     - Conditional and unconditional jumps
     - Как узнать будет ли jump или нет
     - `EIP` - Extended Instruction Pointer
+  - 6. Stepping into Calls
+  - 7.1. Breakpoints
+  - 7.2. Setting Breakpoints on Strings
+    - 1 Способ поиска строк - визуальный
+    - 2 Способ поиска строк, для больших программ
