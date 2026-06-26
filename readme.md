@@ -153,6 +153,7 @@
     - Использование `DIE`
     - Описание x32dbg/x64dbg
     - Использование x32dbg/x64dbg
+    - Если debug не останавливается на EntryPoint программы
     - Conditional and unconditional jumps
     - Как узнать будет ли jump или нет
     - `EIP` - Extended Instruction Pointer
@@ -161,3 +162,10 @@
   - 7.2. Setting Breakpoints on Strings
     - 1 Способ поиска строк - визуальный
     - 2 Способ поиска строк, для больших программ
+  - 8. Reversing Jumps
+    - Последовательность действий в видео
+  - 9.1. How to patch a program
+    - Убрать инструкцию. Удаление или заполнение `NOP`. Способ 1
+    - Удаление или заполнение `NOP`. Способ 2
+    - Запомнить изменения в файле (Patching)
+  - 9.2. Организация бесконечного цикла (final)
