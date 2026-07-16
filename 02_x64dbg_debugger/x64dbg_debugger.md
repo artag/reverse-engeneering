@@ -1,4 +1,4 @@
-# x64dg debugger for reverse engeneering beginners
+# x64dbg debugger for reverse engeneering beginners
 
 ## 1-2. Installing tools
 
