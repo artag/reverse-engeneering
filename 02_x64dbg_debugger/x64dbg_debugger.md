@@ -21,13 +21,13 @@ Passwords to unzip crackme's:
 crackinglessons.com
 ```
 
-Описание файлов crackme вместе с описанием локально доступны [тут](src/description.md)
+Описание файлов crackme вместе с описанием локально доступны [тут](../challenges/description.md)
 
 ## 4. Workspace for reverse engineering. Типичный маршрут reverse engineering
 
-Скачиваем и распаковываем файл [01-mexican.zip](src/01-mexican.zip)
+Скачиваем и распаковываем файл [01-mexican.zip](../challenges/01-mexican.zip)
 
-Информация по нему [здесь](src/description.md)
+Информация по нему [здесь](../challenges/description.md)
 
 Типичный маршрут reverse engineering
 
@@ -213,7 +213,7 @@ STATUS_BREAKPOINT или 0xC0000005), чтобы проверить реакци
 
 CTF - i.e. get the secret word/phrase/password/serial-number
 
-В качестве примера расссматривается [01-mexican.zip](src/01-mexican.zip).
+В качестве примера расссматривается [01-mexican.zip](../challenges/01-mexican.zip).
 Это консольная программа CTF.
 
 ### Использование `DIE`
@@ -357,7 +357,7 @@ Call - вызов кода по определенному адресу. Т.е. 
 
 ## 7.2. Setting Breakpoints on Strings
 
-Исследуемая программа [01-mexican.zip](src/01-mexican.zip) запускается, печатает
+Исследуемая программа [01-mexican.zip](../challenges/01-mexican.zip) запускается, печатает
 в консоли "try harder" и завершает свою работу.
 
 1. Запускаем x32dbg

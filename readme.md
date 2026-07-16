@@ -169,3 +169,5 @@
     - Удаление или заполнение `NOP`. Способ 2
     - Запомнить изменения в файле (Patching)
   - 9.2. Организация бесконечного цикла (final)
+
+- [challenges (crackme's)](challenges/description.md)
