@@ -457,3 +457,13 @@ File -> Patch file... или `Ctrl+P`
 На этом курс завершился.
 
 Крякнутый мной файл [Untitled1-edit.zip](src/Untitled1-edit.zip)
+
+## Дополнительный crack (вне курса)
+
+Консольное приложение для crack [EasyPeasy.zip](../challenges/easyPeasy.zip)
+
+Его [описание](../challenges/description.md)
+
+Крякнутое приложение [EasyPeasy-edit.zip](src/EasyPeasy-edit.zip)
+
+Или можно использовать логин/пароль, выдернутые из файла [EasyPeasy-password.txt](src/EasyPeasy-password.txt)
