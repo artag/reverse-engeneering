@@ -455,3 +455,5 @@ File -> Patch file... или `Ctrl+P`
 Считаю, что так делать нельзя.
 
 На этом курс завершился.
+
+Крякнутый мной файл [Untitled1-edit.zip](src/Untitled1-edit.zip)
