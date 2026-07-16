@@ -170,4 +170,6 @@
     - Запомнить изменения в файле (Patching)
   - 9.2. Организация бесконечного цикла (final)
 
+- [windows GUI Programs](03_windows_gui_programs/windows_gui.md)
+
 - [challenges (crackme's)](challenges/description.md)
