@@ -171,5 +171,8 @@
   - 9.2. Организация бесконечного цикла (final)
 
 - [windows GUI Programs](03_windows_gui_programs/windows_gui.md)
+  - 2-4. Взлом `CrackMe1.exe`
+    - Анализ PE файлов при помощи утилиты "Detect It Easy"
+    - Первичная настройка x32dbg/x64dbg
 
 - [challenges (crackme's)](challenges/description.md)
