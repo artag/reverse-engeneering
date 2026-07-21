@@ -30,3 +30,57 @@
 - В Ignored Exceptions добавить значение `0x00000000 - 0xFFFFFFFF`
 
 Подробнее см. в [02_x64dbg_debugger/5. Debugger Stepping Basics/Setting Preferences. Предварительная настройка x32dbg/x64dbg)](../02_x64dbg_debugger/x64dbg_debugger.md)
+
+## 5. Setting breakpoints on strings
+
+На примере оконного приложения `CrackMe1.exe`
+
+Последовательность шагов:
+
+- Открываем файл в x32dbg/x64dbg
+- Search for strings for bad message
+- Put BP (breakpoint) on bad message
+- Search for where serial key is being compared
+- Put BP on the comparison instruction
+- Extract the Serial Key
+
+Под "bad message" понимается сообщение об ошибке, когда введено неправильное значение и т.п.
+
+### Search for strings for bad message
+
+Узнаем из неуспешного запуска сообщение об ошибке.
+
+Запускаем программу в x32dbg/x64dbg -> `Run` (F9)
+
+ПКМ -> Search For -> Current Module -> String references
+
+Можем искать по подстроке в `Search:`
+
+Подробнее см. в [02_x64dbg_debugger/7.2. Setting Breakpoints on Strings/Setting Preferences/2 Способ поиска строк, для больших программ)](../02_x64dbg_debugger/x64dbg_debugger.md)
+
+Находим строку вида: "Wrong serial key. Try again", переходим по адресу этой строки.
+
+### Search for where serial key is being compared
+
+Пропускаем установку breakpoint на bad message. Видим чуть выше success message.
+
+А еще выше видим инструкцию условного перехода `JNE`, которая выбирает какое сообщение будет показано.
+
+ `JNE` - это Jump Not Equal, см. в [01_assembly_language/14.42-45. Intro to JUMPS/`JNZ` (Jump Not Zero) / `JNE` (Jump Not Equal)](../01_assembly_language/assembly_language.md)
+
+Ставим breakpoint на `JNE`.
+
+Выше идет сравнение значений в регистре, а еще выше чтение сообщения из поля ввода текста:
+
+```asm
+call dword ptr ds:[<&GetDlgItemTextA>]          // чтение ввода, ставим breakpoint сюда
+...
+lea eax, dword ptr ss:[ebp-30]                  // в eax появляется введенное значение
+...
+инструкции mov, cmp, jne
+```
+
+В ecx видна строка со значением, с которым производится сравнение eax.
+В ecx содержится валидное слово.
+
+Если это валидное слово ввести в окно `CrackMe1.exe`, то будет получено сообщение "Well done!"

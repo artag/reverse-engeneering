@@ -19,7 +19,8 @@ A gui-based crackme written in Visual Studio 2017 win32 API. Objectives:
 
 [https://crackinglessons.com/crackme-2/](https://crackinglessons.com/crackme-2/)
 
-Another gui-based crackme written in visual studio 2017 win32 api. Objectives:
+Another gui-based crackme written in visual studio 2017 win32 api.
+Objectives: Without patching, Register it to your name.
 
 [crackMe2.zip](crackMe2.zip)
 

@@ -174,5 +174,8 @@
   - 2-4. Взлом `CrackMe1.exe`
     - Анализ PE файлов при помощи утилиты "Detect It Easy"
     - Первичная настройка x32dbg/x64dbg
+  - 5. Setting breakpoints on strings
+    - Search for strings for bad message
+    - Search for where serial key is being compared
 
 - [challenges (crackme's)](challenges/description.md)
