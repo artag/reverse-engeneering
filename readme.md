@@ -177,5 +177,8 @@
   - 5. Setting breakpoints on strings
     - Search for strings for bad message
     - Search for where serial key is being compared
+  - 6. Windows API functions
+    - 6.1. `MessageBox`
+  - 7. Pushing parameters to the stack
 
 - [challenges (crackme's)](challenges/description.md)

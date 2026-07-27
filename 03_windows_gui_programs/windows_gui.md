@@ -84,3 +84,70 @@ lea eax, dword ptr ss:[ebp-30]                  // в eax появляется �
 В ecx содержится валидное слово.
 
 Если это валидное слово ввести в окно `CrackMe1.exe`, то будет получено сообщение "Well done!"
+
+## 6. Windows API functions
+
+Windows API Functions = win32 API
+
+Описания win32 функций смотреть на MSDN. Например для `MessageBox`:
+
+[MSDN - MessageBox](https://learn.microsoft.com/ru-ru/windows/win32/api/winuser/nf-winuser-messagebox)
+
+Или для функции `GetDlgItemTextA`:
+
+[MSDN - GetDlgItemTextA](https://learn.microsoft.com/ru-ru/windows/win32/api/winuser/nf-winuser-getdlgitemtexta)
+
+(Извлекает заголовок или текст, связанный с элементом управления в диалоговом окне.)
+
+### 6.1. `MessageBox`
+
+```asm
+push 0                                  // [ Button Type ]
+push "Sorry!"                           // [ Caption ]
+push "Wrong serial key. Try again!"     // [ Text ]
+push 0                                  // [ Parent Window ]
+call MessageBox
+```
+
+Функция `MessageBox` - отображает модальное диалоговое окно, содержащее
+системный значок, набор кнопок и краткое сообщение для конкретного приложения,
+например сведения о состоянии или ошибке. Окно сообщения возвращает
+целочисленное значение, указывающее, какую кнопку нажал пользователь.
+
+Перед вызовом функции с параметрами все параметры
+сначала помещаются в стек (инструкция 'PUSH'), а потом вызывается сама функция.
+
+`MessageBox` (в C++) вызывается с 4 параметрами:
+
+```cpp
+int MessageBox(
+  [in, optional] HWND    hWnd,
+  [in, optional] LPCTSTR lpText,
+  [in, optional] LPCTSTR lpCaption,
+  [in]           UINT    uType
+);
+```
+
+## 7. Pushing parameters to the stack
+
+The stack is reverse of the push, the stack grows from bottom up.
+
+Все параметры передаются в стек в обратном поряжке. В случае с `MessageBox`,
+начиная с 4 по 1, а потом вызывается сама функция.
+
+```text
+[--- Stack ---]
+0
+Wrong serial key. Try again!
+Sorry
+0
+```
+
+Более подробно про стек см. в [01_assembly_language](../01_assembly_language/assembly_language.md):
+
+- 07.18. The stack. Операция `PUSH`
+- 07.20 Pushing constants and strings to the stack
+- 08.21. Funcions call (`CALL`)
+- 08.22. Funcions call (`CALL`). Вызов функций с 2 параметрами (строка, строка)
+- 08.23. Funcions call (`CALL`). Вызов функций с 2 параметрами (строка, число)
+- 08.24. Funcions call (`CALL`). Вызов функций с 3 параметрами
