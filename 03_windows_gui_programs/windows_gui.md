@@ -151,3 +151,109 @@ Sorry
 - 08.22. Funcions call (`CALL`). Вызов функций с 2 параметрами (строка, строка)
 - 08.23. Funcions call (`CALL`). Вызов функций с 2 параметрами (строка, число)
 - 08.24. Funcions call (`CALL`). Вызов функций с 3 параметрами
+
+## 8. Bypassing messages. Показ другого (нужного) сообщения
+
+Для `CrackMe1.exe` помимо секретного слова надо еще модифицировать (patch) файл так, чтобы он
+всегда показывал Congrats сообщение при вводе любого текста (см. [description.md](../challenges/description.md))
+
+### 8.1. Поиск мест для patching файла
+
+1. Ищем строку сообщения об ошибке через
+
+ПКМ на окне -> Search for -> Current Module -> String references
+
+Подробнее см. в [02_x64dbg_debugger/2 Способ поиска строк, для больших программ](../02_x64dbg_debugger/x64dbg_debugger.md)
+
+2. Видим `JNE`, который указывает параметры и на вызов MessageBox с сообщением об ошибке.
+
+Ставим на `JNE` BreakPoint.
+
+3. В режиме отладки, находясь на `JNE` можно переключить jump на другую ветку, исправив флаг `ZF`.
+
+Подробнее см. в [02_x64dbg_debugger/8. Reversing Jumps](../02_x64dbg_debugger/x64dbg_debugger.md)
+
+К сожалению, в этом случае Congrats сообщение не будет показано (впрочем как и сообщение об ошибке)
+из-за некорректной передачи параметров в стек перед вызовом MessageBox с поздравлениями:
+
+```text
+[--- Wrong parameter 1 --]
+push 0                // Button type     Верно
+push "Congrats!"      // Caption         Верно
+push "Well done!"     // Text            Верно
+push eax              // Parent Window   Неверно, в eax лежит FFFFFFFF (-1), и это передается в стек
+call MessageBox       // Не вызывается из-за Parent Window
+```
+
+Правильные параметры, которые должны быть:
+
+```text
+push 0                // Button type
+push "Congrats!"      // Caption
+push "Well done!"     // Text
+push 0                // Parent Window   В eax надо положить 0
+call MessageBox       // Должно быть OK
+```
+
+### 8.2. Правки файла
+
+1. Удаляем инструкцию `JNE`. Вместо нее добавляются 2 инструкции `NOP` (No Operation).
+
+Как вставить `NOP` см. в [02_x64dbg_debugger/9.1. How to patch a program](../02_x64dbg_debugger/x64dbg_debugger.md)
+
+2. В `eax` надо записать `0`, чтобы MessageBox можно было вызвать.
+
+У нас 2 байта для новой инструкции.
+
+НО, если в `EAX` поместить 0:
+
+```asm
+MOV eax, 0
+```
+
+Такая инструкция занимает 5 байт - нам не хватает места.
+
+Решение, надо поместить 0 в младший регистр `AL`:
+
+```asm
+MOV al, 0
+```
+
+Такая инструкция уже занимает 2 байта - нам хватает места.
+
+```text
+EAX занимает 4 байта
+AX  занимает 2 байта
+AL  занимает 1 байт
+FFFFFFFF     4 байта
+```
+
+![Register size](08-bypassing-messages/01_register_size.jpg)
+
+3. Patch файл
+
+Подробнее см. в [02_x64dbg_debugger/9.1. How to patch a program/Запомнить изменения в файле (Patching)](../02_x64dbg_debugger/x64dbg_debugger.md)
+
+Будет всего 2 изменения.
+
+Почему-то такой "финт" с AL срабатывает - цель достигнута.
+
+## 8.3. Как я модифицировал
+
+Считаю, что препод не правильно сделал изменения в файле.
+
+Я переставил инструкции, чтобы они все уместились. И нормальный push добавил.
+
+Было:
+
+![Initial file](08-bypassing-messages/02_initial_file.jpg)
+
+Снес 4 инструкции. 2 инструкции перенес просто выше и добавил `push 0`. Еще и свободное место осталось.
+
+Стало:
+
+![Cracked file](08-bypassing-messages/03_cracked_file.jpg)
+
+Крякнутое приложение (моя версия) [CrackMe1-edit.zip](src/CrackMe1-edit.zip)
+
+Или можно использовать серийник/пароль, выдернутый из файла [CrackMe1-serial.txt](src/CrackMe1-serial.txt)

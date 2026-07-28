@@ -180,5 +180,9 @@
   - 6. Windows API functions
     - 6.1. `MessageBox`
   - 7. Pushing parameters to the stack
+  - 8. Bypassing messages. Показ другого (нужного) сообщения
+    - 8.1. Поиск мест для patching файла
+    - 8.2. Правки файла
+    - 8.3. Как я модифицировал
 
 - [challenges (crackme's)](challenges/description.md)
