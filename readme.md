@@ -174,7 +174,7 @@
   - 2-4. Взлом `CrackMe1.exe`
     - Анализ PE файлов при помощи утилиты "Detect It Easy"
     - Первичная настройка x32dbg/x64dbg
-  - 5. Setting breakpoints on strings
+  - 5. Setting breakpoints on strings. Поиск по строке
     - Search for strings for bad message
     - Search for where serial key is being compared
   - 6. Windows API functions
@@ -185,5 +185,8 @@
     - 8.2. Правки файла
     - 8.3. Как модифицировал я
   - 9. Bypassing using xor assembly. Показ другого (нужного) сообщения. Второй способ
+  - 10. Breakpoints on Intermodular Calls. Поиск по вызовам функций
+  - 11. Breakpoints from Call Stack. Поиск по истории Call Stack
+  - 12-14. Registration checks
 
 - [challenges (crackme's)](challenges/description.md)
