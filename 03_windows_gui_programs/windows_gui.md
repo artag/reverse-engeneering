@@ -321,7 +321,7 @@ xor eax, eax
 Переходим на место последнего вызова функции (на строку после нее). Видим вызов уже знакомого
 MessageBox с сообщением об ошибке.
 
-## 12-14. Registration checks
+## 12-13. Registration checks
 
 Разбор файла `CrackMe2.exe` - его надо зарегистрировать на себя, не делая patch.
 
@@ -329,3 +329,131 @@ MessageBox с сообщением об ошибке.
 Entry point. См. ранее `Анализ PE файлов при помощи утилиты "Detect It Easy"`
 
 Если надо выполняем первичную настройку xdbg - см. ранее `Первичная настройка x32dbg/x64dbg`
+
+## 14. Registration checks. Как происходит проверка регистрации
+
+Запускаем файл на выполнение в `x32dbg` - Run или F9.
+
+Останов на Entry point.
+
+Начинаем пошагово выполнять программу (F8), пока не появится окно приложения. Это вызов
+функции вида:
+
+```asm
+...
+call <crackme2._WinMain@16>
+...
+```
+
+Ставим на нее breakpoint (F2) и проваливаемся в нее - Step Into (F7).
+
+Уже внутри вызова идем пошагово (F8), вызов функции создания пустого окна, затем
+передача каких-то значений в стек (push), потом вызов функции создания файла:
+
+```asm
+...
+call dword ptr ds:[<&ShowWindow>]
+push 0
+push 40000080
+push 3
+push 0
+push 1
+push 80000000
+push crackme2.411B28      // 411B28:"keyfile.txt"
+call dword ptr ds:[<&CreateFileA>]
+...
+```
+
+Гуглим описание функции:
+
+[msdn CreateFileA](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilea)
+
+```cpp
+HANDLE CreateFileA(
+  [in]           LPCSTR                lpFileName,
+  [in]           DWORD                 dwDesiredAccess,
+  [in]           DWORD                 dwShareMode,
+  [in, optional] LPSECURITY_ATTRIBUTES lpSecurityAttributes,
+  [in]           DWORD                 dwCreationDisposition,
+  [in]           DWORD                 dwFlagsAndAttributes,
+  [in, optional] HANDLE                hTemplateFile
+);
+```
+
+Возвращаемое значение функции:
+
+```text
+...
+Return value
+
+If the function succeeds, the return value is an open handle to the specified file,
+device, named pipe, or mail slot.
+
+If the function fails, the return value is INVALID_HANDLE_VALUE.
+...
+```
+
+Call **возвращает** значение и **записывает** его в `EAX`
+
+После вызова функции `CreateFileA` видим:
+
+```asm
+...
+call dword ptr ds:[<&CreateFileA>]
+mov esi, eax                        // запись в регистр esi значения eax
+cmp esi, FFFFFFFF                   // сравнение
+je crackme2.4010BC                  // условный переход
+```
+
+`JE` - jumps only if the `ZF` is set to **1** (i.e. the result of the last calculation is **zero**)
+
+В x32dbg и x64dbg инструкция `JZ` может обозначаться как `JE` (Jump Equal).
+
+Шагаем по F8, функция возвращает и пишет в `EAX` значение `FFFFFFFF` (т.е. -1 - ошибка).
+Далее будет сравнение и выполнится jump.
+
+## 15. Software registration. Регистрация программы
+
+Создаем пустой файл `keyfile.txt` рядом с `crackme2.exe`.
+
+Теперь crackme2.exe пишет что зарегистрирован на... <пустое место>
+
+Если в файл добавить какую-то строку, то эта строка появится в этом сообщении.
+
+Функция `CreateFileA` теперь возвращает указатель на файл `keyfile.txt`.
+Далее передаются параметры в стек и вызывается функция
+[msdn readfile](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile)
+
+```cpp
+BOOL ReadFile(
+  [in]                HANDLE       hFile,
+  [out]               LPVOID       lpBuffer,
+  [in]                DWORD        nNumberOfBytesToRead,
+  [out, optional]     LPDWORD      lpNumberOfBytesRead,
+  [in, out, optional] LPOVERLAPPED lpOverlapped
+);
+```
+
+В коде:
+
+```asm
+...
+je crackme2.4010BC
+push 0
+push <crackme2.struct _OVERLAPPED ol>
+push 1F
+push <crackme2.char * ReadBuffer>         // 4142E4:"слово в файле keyfile.txt"
+push esi                                  // здесь указатель на файл keyfile.txt
+call dword ptr ds:[&ReadFileEx]
+...
+```
+
+Из описания:
+
+```text
+[out] lpBuffer
+
+A pointer to the buffer that receives the data read from a file or device.
+
+This buffer must remain valid for the duration of the read operation. The caller must not use this buffer until the read operation is completed.
+```

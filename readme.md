@@ -187,6 +187,8 @@
   - 9. Bypassing using xor assembly. Показ другого (нужного) сообщения. Второй способ
   - 10. Breakpoints on Intermodular Calls. Поиск по вызовам функций
   - 11. Breakpoints from Call Stack. Поиск по истории Call Stack
-  - 12-14. Registration checks
+  - 12-13. Registration checks
+  - 14. Registration checks. Как происходит проверка регистрации
+  - 15. Software registration. Регистрация программы
 
 - [challenges (crackme's)](challenges/description.md)
