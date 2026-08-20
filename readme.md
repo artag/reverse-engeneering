@@ -190,5 +190,16 @@
   - 12-13. Registration checks
   - 14. Registration checks. Как происходит проверка регистрации
   - 15. Software registration. Регистрация программы
+  - 16-17. Removing Nag screens. Удаление всплывающих окон
+    - 17.1. Еще одна настройка  x32dbg/x64dbg
+      - Выключение System Breakpoint
+  - 18. Removing Nag screen 1. Удаление первого всплывающего окна
+  - 19. Removing Nag screen 2. Удаление второго всплывающего окна
+  - 20. Setting Registration Status. Установка статуса Registered
+    - Решение 1. Заменить `JE` на `NOP`
+    - Решение 2. Поставить переменную isRegistered в 1
+  - Как отследить обращения по адресу в памяти. Hardware Breakpoint
+    - Важные ограничения
+    - Альтернатива (Memory Breakpoint)
 
 - [challenges (crackme's)](challenges/description.md)
