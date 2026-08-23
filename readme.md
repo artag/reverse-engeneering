@@ -203,3 +203,5 @@
     - Альтернатива (Memory Breakpoint)
 
 - [challenges (crackme's)](challenges/description.md)
+
+- [Из канала First Steps(youtube)](yt01_first_steps/yt01_first_steps.md)
