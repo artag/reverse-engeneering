@@ -690,7 +690,7 @@ call dword ptr ds:[<&MessageBoxA>]      // Статус "Unregistered"
 Если вам нужно отследить обращение не к конкретному числу, а к огромному диапазону памяти
 (например, целой секции данных .data), вместо Hardware используйте `Breakpoint -> Memory, Access`.
 
-## 20-23. Продление trial периода
+## 21-23. Продление trial периода
 
 Разбор файла `CrackMe4.exe` (см. [description.md](../challenges/description.md)):
 
@@ -729,8 +729,7 @@ mov ecx,0xFF      // вместо 0x1E
 
 Всегда значение: "254 дня осталось", независимо от текущей даты
 
-
-## 24-25. Выяснение генерации serial key
+## 24-25. Выяснение механизма генерации serial key
 
 Разбор файла `CrackMe5.exe` (см. [description.md](../challenges/description.md)):
 
