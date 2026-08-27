@@ -1,5 +1,13 @@
 # Windows GUI Programs
 
+Кратко. Главное найти место, где требуется правка
+
+3 метода это сделать:
+
+- Search for strings
+- Search for intermodular calls
+- Examine call stack
+
 ## 2-4. Взлом `CrackMe1.exe`
 
 Файл, который будет ломаться, здесь - [crackMe1.zip](../challenges/crackMe1.zip)
@@ -681,3 +689,76 @@ call dword ptr ds:[<&MessageBoxA>]      // Статус "Unregistered"
 
 Если вам нужно отследить обращение не к конкретному числу, а к огромному диапазону памяти
 (например, целой секции данных .data), вместо Hardware используйте `Breakpoint -> Memory, Access`.
+
+## 20-23. Продление trial периода
+
+Разбор файла `CrackMe4.exe` (см. [description.md](../challenges/description.md)):
+
+- Надо продлить trial период на более чем 30 дней
+- В окне "About" продленный trial период также должен быть виден
+
+Краткое описание процесса взлома.
+
+1. Через `Animate over (Ctrl+F8)` выполнение кода идет до появления окна:
+
+```asm
+00401305    call <_WinMain@16>
+```
+
+2. Ставим breakpoint на вызов этой функции, перезапускаем программу и в следующий раз делаем
+Step Over (F7)
+
+3. Видим примерно такое:
+
+![Вычисление trial периода](23-extend-trial/01_extend_trial.jpg)
+
+- Появляется окно
+- Получаем время и сохраняем его в `EAX`
+- В `ECX` помещается `1E`
+- `ECX - EAX` и это значение записывается в переменную как количество оставшихся дней
+
+Правка: увеличить число в `ECX`
+
+```asm
+mov ecx,0xFF      // вместо 0x1E
+```
+
+### Итог
+
+Крякнутое приложение (моя версия) [CrackMe4-edit.zip](src/CrackMe4-edit.zip)
+
+Всегда значение: "254 дня осталось", независимо от текущей даты
+
+
+## 24-25. Выяснение генерации serial key
+
+Разбор файла `CrackMe5.exe` (см. [description.md](../challenges/description.md)):
+
+- Ввести свое имя
+- Взломать ПО, чтобы найти валидный серийник для введенного имени
+
+Здесь показан search по строке "Wrong serial key. Try again."
+
+`ПКМ -> Search for -> Current Module -> String references`
+
+Находим место, где показывается этот текст в MessageBox.
+
+Выше идет вызов функции
+[MSDN - GetDlgItemTextA](https://learn.microsoft.com/ru-ru/windows/win32/api/winuser/nf-winuser-getdlgitemtexta)
+
+Вводим значения: имя и серийник, смотрим на появление строк в регистрах.
+Шагаем по коду через F8.
+
+Видим примерно такое:
+
+![Серийник](25-serial-key/01_serial_key.jpg)
+
+`wspintfA` - функция форматирования из C++
+
+`aaaa-3254222` - это что-то похожее на серийник, которое формируется из введенного имени "aaaa"
+
+Ну и ниже идет сравнение `EAX` и `ECX` и условный переход, которые выбирает один из MessageBox.
+
+### Итог
+
+Серийник/пароль, который генерится исходя из текущего числа [CrackMe5-serial.txt](src/CrackMe5-serial.txt)

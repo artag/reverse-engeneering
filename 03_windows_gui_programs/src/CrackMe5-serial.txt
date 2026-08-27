@@ -1,0 +1,19 @@
+n1 -> current year + 1234
+n2 -> current month
+n3 -> current day
+
+Serial key:
+name-n1n2n3
+
+Example:
+
+year = 2026
+month = 8
+day = 27
+
+n1 = 2026 + 1234 = 3260
+n2 = 8
+n3 = 27
+
+Serial key:
+name-3260827

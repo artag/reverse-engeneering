@@ -201,6 +201,8 @@
   - Как отследить обращения по адресу в памяти. Hardware Breakpoint
     - Важные ограничения
     - Альтернатива (Memory Breakpoint)
+  - 21-23. Продление trial периода
+  - 24-25. Выяснение механизма генерации serial key
 
 - [challenges (crackme's)](challenges/description.md)
 
