@@ -761,3 +761,21 @@ mov ecx,0xFF      // вместо 0x1E
 ### Итог
 
 Серийник/пароль, который генерится исходя из текущего числа [CrackMe5-serial.txt](src/CrackMe5-serial.txt)
+
+## 26. Взлом `Target by TDC (Target.exe)`
+
+Файл, который будет ломаться, здесь - [target.zip](../challenges/target.zip)
+
+[Описание](../challenges/description.md)
+
+Надо:
+
+1. Remove the starting Nag Screen
+2. When the button Re-Check is clicked, a pop-up messagebox appears and you should set it to say "Thank you for registering this software"
+3. Set the Status box text to: "Clean crack! Good Job!"
+
+Самостоятельная работа. Мои версии кряков:
+
+- [Target-edit-1.zip](src/Target-edit-1.zip) удален вызов Nag Screen
+- [Target-final.zip](src/Target-final.zip) полностью сломанная версия файла
+

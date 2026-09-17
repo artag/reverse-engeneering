@@ -203,6 +203,7 @@
     - Альтернатива (Memory Breakpoint)
   - 21-23. Продление trial периода
   - 24-25. Выяснение механизма генерации serial key
+  - 26. Взлом `Target by TDC (Target.exe)`
 
 - [challenges (crackme's)](challenges/description.md)
 
