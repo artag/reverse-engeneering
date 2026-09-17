@@ -204,6 +204,8 @@
   - 21-23. Продление trial периода
   - 24-25. Выяснение механизма генерации serial key
   - 26. Взлом `Target by TDC (Target.exe)`
+  - 27. Взлом `CrackMe7.exe` путем правки `EAX`
+    - Инструкция `TEST`
 
 - [challenges (crackme's)](challenges/description.md)
 
