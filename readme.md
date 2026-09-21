@@ -208,6 +208,7 @@
     - Инструкция `TEST`
   - 28. Hardware breakpoints and memory patching
     - Переход на base address исследуемой программы (module)
+  - 29. Memory Patching (еще один пример)
 
 - [challenges (crackme's)](challenges/description.md)
 

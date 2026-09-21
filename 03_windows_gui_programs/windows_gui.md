@@ -884,3 +884,15 @@ je 0x004038A7
 ### Переход на base address исследуемой программы (module)
 
 Перейти в модуль исследуемой программы можно так: `окно Symbols -> ЛКМ на Base address нужного Module`
+
+## 29. Memory Patching (еще один пример)
+
+Самостоятельная работа. Ломаемый файл [crackMe9.zip](../challenges/crackMe9.zip)
+
+[Описание](../challenges/description.md)
+
+Задание:
+
+1. Find the correct serial key
+
+2. Change it to a different key of your choice
