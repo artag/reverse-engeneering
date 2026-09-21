@@ -206,6 +206,8 @@
   - 26. Взлом `Target by TDC (Target.exe)`
   - 27. Взлом `CrackMe7.exe` путем правки `EAX`
     - Инструкция `TEST`
+  - 28. Hardware breakpoints and memory patching
+    - Переход на base address исследуемой программы (module)
 
 - [challenges (crackme's)](challenges/description.md)
 

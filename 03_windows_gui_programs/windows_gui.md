@@ -815,3 +815,72 @@ mov ecx,0xFF      // вместо 0x1E
 
 Инструкция вида `test eax, eax` проверяет значение в `EAX`. Если значение `EAX` = 0, то выставляется
 флаг `ZF = 1` и следующий условный jump `JE` (`JZ`) срабатывает.
+
+## 28. Hardware breakpoints and memory patching
+
+Файл, на примере которого будет показана установка hardware breakpoints, здесь - [crackMe8.zip](../challenges/crackMe8.zip)
+
+[Описание](../challenges/description.md)
+
+Описание: This crackme is for learning how to put hardware breakpoints on memory addresses
+and then patch it to register the program.
+
+Краткий план действий:
+
+1. Setting hardware breakpoints on RAM memory
+
+2. Modifying data in RAM memory addresses directly
+
+Определения:
+
+- *Software breakpoints* (которые рассматривались ранее) - are breakpoints on instructions.
+
+- *Hardware breakpoints* (будут рассмотрены здесь) - are breakpoints on memory access.
+
+1) Как обычно ищем в текущем модуле строку "UN-REGISTERED".
+
+Переходим в код, который ссылается на память, где записана строка "UN-REGISTERED".
+Радом лежит вызов строки "REGISTERED" и условный jump (`JE`), который выбирает что показывать.
+
+`JE` = Jump Equal, выполняет jump, если `ZF` = 1 (zero flag)
+
+2) Инструкции, которые выполняют выбор это чаще всего `CMP` или `TEST`
+
+В рассматриваемом коде (адрес может быть другим):
+
+```asm
+...
+cmp dword ptr ds:[7260D],0
+mov ...
+mov ...
+mov ...
+je 0x004038A7
+```
+
+Выполняется сравнение данных по адресу `007260D` с `0`. Если равны, то `ZF = 1`.
+
+3) Показать данные по этому адресу в окне `Dump 1`:
+
+ПКМ на строке cmp -> Follow in Dump -> Address: `007260D`
+
+4) Установка Hardware breakpoint на адрес
+
+В окне `Dump 1` -> столбец Hex -> ПКМ на значении `00` -> Breakpoint -> Hardware, Access -> Dword
+
+- byte - (`00`)
+- word - 2 байта (`00` `00`)
+- dword - 4 байта (`00 00 00 00`)
+
+5) Теперь при попытке доступа по адресу `007260D` сработает hardware breakpoint.
+
+6) Модифицируем значение по адресу `007260D`
+
+Окно Dump 1 -> Hex `00` -> ПКМ -> Binary -> Edit (Ctrl+E)
+
+Включить `Keep size`, Поменять Hex `00 -> 01` -> `OK`
+
+7) Patch File
+
+### Переход на base address исследуемой программы (module)
+
+Перейти в модуль исследуемой программы можно так: `окно Symbols -> ЛКМ на Base address нужного Module`
