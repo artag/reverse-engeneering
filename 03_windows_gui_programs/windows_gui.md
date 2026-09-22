@@ -881,6 +881,8 @@ je 0x004038A7
 
 7) Patch File
 
+Итоговый файл: [CrackMe8-edit.zip](src/CrackMe8-edit.zip)
+
 ### Переход на base address исследуемой программы (module)
 
 Перейти в модуль исследуемой программы можно так: `окно Symbols -> ЛКМ на Base address нужного Module`
@@ -896,3 +898,11 @@ je 0x004038A7
 1. Find the correct serial key
 
 2. Change it to a different key of your choice
+
+Итоговые файлы:
+
+- [CrackMe9-serial-key.txt](src/CrackMe9-serial-key.txt). Серийник от оригинального файла "ABC-123456"
+
+- [CrackMe9-edit.zip](src/CrackMe9-edit.zip). Измененный серийник
+
+- [CrackMe9-edit-serial-key.txt](src/CrackMe9-edit-serial-key.txt). Измененный серийник "serial-key"
